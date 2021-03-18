@@ -44,11 +44,12 @@ class ProductRepository extends Product implements MasterInterface
     {
         $detail = new ProductDetail();
         $list = Helper::dataColumn($this->datatable, $this->primaryKey);
-        $query = $this->select($list)->addSelect(DB::raw('sum(item_detail_stock_qty) as total_qty'))
-            ->leftJoin($detail->getTable(), 'item_detail_product_id', $this->getKeyName())
-            ->leftJoin(BranchFacades::getTable(), 'item_detail_branch_id', BranchFacades::getKeyName())
-            ->leftJoin(CategoryFacades::getTable(), CategoryFacades::getKeyName(), 'item_product_item_category_id')
-            ->groupBy('item_detail_branch_id');
+        $query = $this->select($list)
+            // ->leftJoin($detail->getTable(), 'item_detail_product_id', $this->getKeyName())
+            // ->leftJoin(BranchFacades::getTable(), 'item_detail_branch_id', BranchFacades::getKeyName())
+            ->leftJoin(CategoryFacades::getTable(), CategoryFacades::getKeyName(), 'item_product_item_category_id');
+            // ->groupBy('item_product.item_product_id')
+            // ->where('item_detail_branch_id', auth()->user()->branch);
             return $query;
     }
 

@@ -121,7 +121,7 @@ class PosLivewire extends Component
     public function updateProduct()
     {
         $detail = new ProductDetail();
-        $query = ProductFacades::dataRepository()->leftJoin($detail->getTable(), 'item_detail_product_id', ProductFacades::getKeyName());
+        $query = ProductFacades::dataRepository();
 
         if (!empty($this->search)) {
             $query->where('item_product_name', 'like', "%$this->search%");
@@ -275,6 +275,22 @@ class PosLivewire extends Component
                 $product['sales_order_detail_total'] = $item->getPriceSum();
 
                 $check_item = OrderDetailFacades::saveRepository($product);
+
+
+                $item_detail = ProductDetail::where('item_detail_product_id', $item->id)->where('item_detail_branch_id', auth()->user()->branch)->get();
+                if($item_detail->count() > 0){
+
+                    $total_qty = $item_detail->sum('item_detail_stock_qty');
+                    $selisih = $total_qty - $item->quantity;
+                    
+                    $item_detail->delete();
+
+                    ProductDetail::create([
+                        'item_detail_stock_qty' => $selisih,
+                        'item_detail_branch_id' => auth()->user()->branch
+                    ]);
+                }
+
                 if (isset($check_item['status']) && $check_item['status']) {
 
                     DB::commit();

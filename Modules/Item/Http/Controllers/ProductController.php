@@ -92,6 +92,7 @@ class ProductController extends Controller
                 if ($request['item_product_is_variant'] == 1) {
                 return redirect()->route($this->getModule() . '_variant', ['code' => $request['code']]);
             }
+
             if (isset($check['status']) && $check['status']) {
 
                 return redirect()->route($this->getModule() . '_data');
@@ -115,14 +116,14 @@ class ProductController extends Controller
         if (request()->isMethod('POST')) {
             $arr = $request->all();
             unset($arr['_token'], $arr['code']);
-            if ($request->item_detail_id) {
+            if ($request->item_detail_variant_id) {
+
                 $check = ProductDetail::find($request->item_detail_id);
+
             } else {
+
                 $check = ProductDetail::where([
                     'item_detail_product_id' => $request->item_detail_product_id,
-                    'item_detail_variant_id' => $request->item_detail_variant_id,
-                    'item_detail_color_id' => $request->item_detail_color_id,
-                    'item_detail_size_id' => $request->item_detail_size_id,
                     'item_detail_branch_id' => $request->item_detail_branch_id,
                 ]);
             }
@@ -222,9 +223,9 @@ class ProductController extends Controller
             $datatable->editColumn('item_product_image', function ($select) {
                 return Helper::createImage(Helper::getTemplate(__CLASS__) . '/thumbnail_' . $select->item_product_image);
             });
-            // $datatable->editColumn('item_detail_stock_qty', function ($select) {
-            //     return $select->sum('item_detail_stock_qty');
-            // });
+            $datatable->editColumn('item_product_stock', function ($select) {
+                return $select->detail->sum('item_detail_stock_qty');
+            });
             $datatable->addColumn('action', Helper::setViewAction($this->template, $this->folder));
             return $datatable->make(true);
         }

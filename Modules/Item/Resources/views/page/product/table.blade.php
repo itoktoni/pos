@@ -1,7 +1,8 @@
 <table id="transaction" class="table table-no-more table-bordered table-striped">
     <thead>
         <tr>
-            <th class="text-left col-md-3">Shop</th>
+            <th class="text-left col-md-2">Product</th>
+            <th class="text-left col-md-2">Shop</th>
             <th style="width: 50px;"  class="text-right col-md-1">Qty</th>
             <th style="width: 50px;" class="text-center">Action</th>
         </tr>
@@ -11,7 +12,10 @@
         @foreach (old('detail') ?? $detail as $item)
         <tr>
             <td data-title="Shop" class="text-left col-lg-1">
-                {{ $item->item_detail_branch_name }}
+                {{ $item->product->item_product_name ?? '' }}
+            </td>
+            <td data-title="Shop" class="text-left col-lg-1">
+                {{ $item->branch->branch_name ?? '' }}
             </td>
             <td data-title="Price" class="text-right col-lg-1">
                 {{ $item->item_detail_stock_qty }}

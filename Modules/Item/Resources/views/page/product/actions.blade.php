@@ -5,6 +5,6 @@
     @endif
 
     <a id="linkMenu" href="{{ route($module.'_variant', ['code' => $model->{$model->getKeyName()}]) }}"
-        class="btn btn-xs btn-success">Variant
+        class="btn btn-xs btn-success">Stock
     </a>
 </div>

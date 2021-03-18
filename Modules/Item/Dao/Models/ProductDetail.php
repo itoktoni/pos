@@ -2,7 +2,10 @@
 
 namespace Modules\Item\Dao\Models;
 
+use App\Dao\Facades\BranchFacades;
+use App\Dao\Models\Branch;
 use Illuminate\Database\Eloquent\Model;
+use Modules\Item\Dao\Facades\ProductFacades;
 
 class ProductDetail extends Model
 {
@@ -58,4 +61,16 @@ class ProductDetail extends Model
         '1' => ['Active', 'primary'],
         '0' => ['Not Active', 'danger'],
     ];
+
+    public $with = ['branch', 'product'];
+
+    public function branch()
+    {
+        return $this->hasOne(Branch::class, BranchFacades::getKeyName(), 'item_detail_branch_id');
+    }
+
+    public function product()
+    {
+        return $this->hasOne(Product::class, ProductFacades::getKeyName(), 'item_detail_product_id');
+    }
 }

@@ -17,33 +17,13 @@
                 <div class="col-md-2 col-ld-2 mb-sm">
 
                     <input type="hidden" name="item_detail_product_id" value="{{ $model->item_product_id }}">
-                    <input type="hidden" name="item_detail_product_name" value="{{ $model->item_product_name }}">
-                    <input type="hidden" name="item_detail_product_image" value="{{ $model->item_product_image }}">
-                    <input type="hidden" name="item_detail_product_slug" value="{{ $model->item_product_slug }}">
-
+                    
                     <img width="100%" class="img-thumbnail"
                         src="{{ Helper::files($template.'/thumbnail_'.$model->item_product_image) }}" alt="">
                 </div>
 
                 <div class="col-md-10 col-lg-10">
-
-                    <div class="form-group">
-
-                        {!! Form::label('name', 'Custom Name', ['class' => 'col-md-2 control-label']) !!}
-                        <div class="col-md-4 {{ $errors->has('item_detail_name') ? 'has-error' : ''}}">
-                            {!! Form::text('item_detail_name', $data->item_detail_name ?? null, ['class' =>
-                            'form-control','placeholder' => $model->item_product_name.' Custom']) !!}
-                            {!! $errors->first('item_detail_name', '<p class="help-block">:message</p>') !!}
-                        </div>
-
-                        {!! Form::label('name', 'Custom Price', ['class' => 'col-md-2 control-label']) !!}
-                        <div class="col-md-4 {{ $errors->has('item_detail_price') ? 'has-error' : ''}}">
-                            {!! Form::text('item_detail_price', $data->item_detail_price ?? null, ['class' =>
-                            'form-control', 'placeholder' =>
-                            Helper::createRupiah($model->item_product_price)]) !!}
-                            {!! $errors->first('item_detail_price', '<p class="help-block">:message</p>') !!}
-                        </div>
-                    </div>
+                    
                     <div class="form-group">
 
                     {!! Form::label('name', 'Branch', ['class' => 'col-md-2 control-label']) !!}

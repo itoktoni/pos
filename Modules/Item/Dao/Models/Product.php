@@ -75,7 +75,7 @@ class Product extends Model
         'item_product_price' => 'required',
     ];
 
-    public $with = ['category', 'brand', 'detail'];
+    // public $with = ['category', 'brand', 'detail'];
 
     const CREATED_AT = 'item_product_created_at';
     const UPDATED_AT = 'item_product_updated_at';
@@ -84,7 +84,7 @@ class Product extends Model
     public $searching = 'item_product_name';
     public $datatable = [
         'item_product_id' => [false => 'ID'],
-        'branch_name' => [true => 'Branch'],
+        // 'branch_name' => [true => 'Branch'],
         'item_product_item_category_id' => [false => 'Category'],
         'item_category_name' => [true => 'Category'],
         'item_product_name' => [true => 'Product Name'],
@@ -96,7 +96,7 @@ class Product extends Model
         'item_product_stroke' => [false => 'Buy'],
         'item_product_price' => [true => 'Price'],
         'item_product_weight' => [false => 'Gram'],
-        'item_product_stock' => [false => 'Stock'],
+        'item_product_stock' => [true => 'Stock'],
         'item_product_image' => [false => 'Images'],
         'item_product_slug' => [false => 'Slug'],
         'item_product_display' => [false => 'Display'],
@@ -123,7 +123,7 @@ class Product extends Model
         'item_product_is_variant' => [false => 'Variant'],
         'item_product_sku' => [false => 'Variant'],
         'item_product_branch_id' => [false => 'Branch'],
-        'item_detail_stock_qty' => [true => 'Qty'],
+        // 'item_detail_stock_qty' => [true => 'Qty'],
     ];
 
     public $status = [
@@ -197,7 +197,7 @@ class Product extends Model
                 $model->item_product_slug = Str::slug($model->item_product_slug.'-'.rand(10,1000));
             }
 
-            $model->item_product_branch_id = auth()->user()->branch;
+            $model->item_product_branch_id = auth()->check() ? auth()->user()->branch : '';
 
         });
 
