@@ -222,6 +222,9 @@ class ProductController extends Controller
             $datatable->editColumn('item_product_image', function ($select) {
                 return Helper::createImage(Helper::getTemplate(__CLASS__) . '/thumbnail_' . $select->item_product_image);
             });
+            // $datatable->editColumn('item_detail_stock_qty', function ($select) {
+            //     return $select->sum('item_detail_stock_qty');
+            // });
             $datatable->addColumn('action', Helper::setViewAction($this->template, $this->folder));
             return $datatable->make(true);
         }

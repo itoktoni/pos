@@ -84,12 +84,11 @@ class Product extends Model
     public $searching = 'item_product_name';
     public $datatable = [
         'item_product_id' => [false => 'ID'],
-        'item_brand_name' => [true => 'Brand'],
+        'branch_name' => [true => 'Branch'],
         'item_product_item_category_id' => [false => 'Category'],
         'item_category_name' => [true => 'Category'],
         'item_product_name' => [true => 'Product Name'],
         'item_product_item_brand_id' => [false => 'Brand'],
-        'item_brand_slug' => [false => 'Brand'],
         'item_category_slug' => [false => 'Category'],
         'item_category_description' => [false => 'Category'],
         'item_category_image' => [false => 'Category'],
@@ -124,6 +123,7 @@ class Product extends Model
         'item_product_is_variant' => [false => 'Variant'],
         'item_product_sku' => [false => 'Variant'],
         'item_product_branch_id' => [false => 'Branch'],
+        'item_detail_stock_qty' => [true => 'Qty'],
     ];
 
     public $status = [
