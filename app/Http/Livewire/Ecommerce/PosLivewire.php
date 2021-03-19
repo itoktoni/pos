@@ -42,13 +42,15 @@ class PosLivewire extends Component
     public $data_wishlist = [];
 
     public $data_uang = [
-        '0.jpg' => '1000',
-        '1.jpg' => '5000',
-        '2.jpg' => '10000',
-        '3.jpg' => '20000',
-        '4.jpg' => '50000',
-        // '5.jpg' => '75000',
-        '6.jpg' => '100000',
+        '500.jpg' => '500',
+        '1000.jpg' => '1000',
+        '2000.jpg' => '2000',
+        '5000.jpg' => '5000',
+        '10000.jpg' => '10000',
+        '20000.jpg' => '20000',
+        '50000.jpg' => '50000',
+        '75000.jpg' => '75000',
+        '100000.jpg' => '100000',
     ];
 
     protected $listeners = [
@@ -215,7 +217,7 @@ class PosLivewire extends Component
 
         DB::beginTransaction();
 
-        $autonumber_order = Helper::autoNumber(OrderFacades::getTable(), OrderFacades::getKeyName(), config('website.prefix') . date('Ym'), config('website.autonumber'));
+        $autonumber_order = Helper::autoNumber(OrderFacades::getTable(), OrderFacades::getKeyName(), config('website.prefix') . date('ym'), config('website.autonumber'));
 
         $order['sales_order_id'] = $autonumber_order;
         $order['sales_order_status'] = 1;
@@ -234,8 +236,8 @@ class PosLivewire extends Component
         $order['sales_order_from_address'] = $branch->branch_address;
         $order['sales_order_from_area'] = $branch->branch_rajaongkir_area_id;
 
-        $order['sales_order_sum_bayar'] = session('bayar');
-        $order['sales_order_sum_kembalian'] = $this->total - session('bayar');
+        $order['sales_order_sum_bayar'] = session('bayar') ?? 0;
+        $order['sales_order_sum_kembalian'] = session('bayar') > 0 ? session('bayar') - $this->total : 0;
         $order['sales_order_sum_total'] = $this->total;
 
         $check_order = OrderFacades::saveRepository($order);
@@ -349,5 +351,56 @@ class PosLivewire extends Component
 
         $this->emit('updateProduct');
 
+    }
+
+    public function printAntrian()
+    {
+        $branch = BranchFacades::find(auth()->user()->branch);
+        // Set params
+        $mid = $branch->branch_name;
+        $store_name = config('website.name');
+        $store_address = $branch->branch_address;
+        $store_phone = $branch->branch_phone;
+
+        
+        $autonumber_order = Helper::autoNumber(OrderFacades::getTable(), OrderFacades::getKeyName(), config('website.prefix') . date('ym'), config('website.autonumber'));
+        $transaction_id = str_replace(config('website.prefix') . date('ym'), '', $autonumber_order);
+       
+        // Init printer
+        $printer = new ReceiptPrinter();
+        $printer->init(
+            config('receiptprinter.connector_type'),
+            config('receiptprinter.connector_descriptor')
+        );
+
+        // $printer->setLogo("public/files/logo/test.png");
+
+        // Set store info
+        $printer->setStore($mid, $store_name, $store_address, $store_phone, null, null);
+
+        // Add items
+        foreach (Cart::getContent() as $item) {
+            $printer->addItem(
+                $item->name,
+                $item->quantity,
+                $item->price
+            );
+        }
+
+        // Calculate total
+        // $printer->calculateSubTotal();
+        $printer->calculateGrandTotal();
+
+        // Set transaction ID
+        $printer->setTransactionID($transaction_id);
+
+        // Set qr code
+        // $printer->setQRcode([
+        //     'tid' => $transaction_id,
+        // ]);
+
+        // Print receipt
+        $printer->printAntrian();
+        // $printer->printLogo();
     }
 }

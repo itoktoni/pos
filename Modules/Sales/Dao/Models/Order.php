@@ -111,7 +111,7 @@ class Order extends Model
         'sales_order_courier_date' => [false => 'Customer'],
         'sales_order_to_name' => [false => 'Customer'],
         'sales_order_to_phone' => [false => 'Phone'],
-        'sales_order_status' => [false => 'Status'],
+        'sales_order_status' => [true => 'Status'],
     ];
 
     protected $dates = [
@@ -125,12 +125,12 @@ class Order extends Model
     ];
 
     public $status = [
-        '1' => ['CREATE', 'warning'],
-        '2' => ['CONFIRM', 'primary'],
-        '3' => ['PAID', 'success'],
-        '4' => ['PROCESSED', 'danger'],
-        '5' => ['DELIVERED', 'info'],
-        '6' => ['COMPLETED', 'default'],
+        // '1' => ['CREATE', 'warning'],
+        // '2' => ['CONFIRM', 'primary'],
+        '1' => ['SUCCESS', 'success'],
+        // '4' => ['PROCESSED', 'danger'],
+        // '5' => ['DELIVERED', 'info'],
+        // '6' => ['COMPLETED', 'default'],
         '0' => ['CANCEL', 'danger'],
     ];
 

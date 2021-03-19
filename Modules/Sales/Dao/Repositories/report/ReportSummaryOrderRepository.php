@@ -27,18 +27,13 @@ class ReportSummaryOrderRepository extends Order implements FromCollection, With
     {
         return [
             'Sales ID',
-            'Create Date',
-            'Delivery Date',
-            'Delivery From',
-            'Customer',
+            'Date',
+            'Branch',
             'Status',
-            'Total Order',
-            'Discount Name',
-            'Discount',
-            'Waybill',
-            'Ongkir',
-            'Total Data',
-            'Notes',
+            'Total',
+            'Bayar',
+            'Kembali',
+            'Fee',
         ];
     }
 
@@ -53,21 +48,12 @@ class ReportSummaryOrderRepository extends Order implements FromCollection, With
         $query = $this->model
             ->select([
                 'sales_order_id',
-                'sales_order_created_at',
                 'sales_order_date_order',
                 'sales_order_from_name',
-                'sales_order_to_name',
                 'sales_order_status',
-                'sales_order_sum_product',
-                'sales_order_discount_name',
-                'sales_order_discount_value',
-                'sales_order_sum_discount',
-                'sales_order_sum_weight',
-                'sales_order_courier_code',
-                'sales_order_courier_name',
-                'sales_order_courier_waybill',
-                'sales_order_sum_ongkir',
                 'sales_order_sum_total',
+                'sales_order_sum_bayar',
+                'sales_order_sum_kembalian',
             ]);
         
         if ($promo = request()->get('promo')) {
@@ -95,20 +81,23 @@ class ReportSummaryOrderRepository extends Order implements FromCollection, With
     {
         return [
            $data->sales_order_id, 
-           $data->sales_order_created_at ? $data->sales_order_created_at->format('d-m-Y') : '', 
+        //    $data->sales_order_created_at ? $data->sales_order_created_at->format('d-m-Y') : '', 
            $data->sales_order_date_order ? $data->sales_order_date_order->format('d-m-Y') : '', 
            $data->sales_order_from_name, 
-           $data->sales_order_to_name, 
+        //    $data->sales_order_to_name, 
            $data->status[$data->sales_order_status][0] ?? '', 
-           $data->sales_order_sum_product, 
-           $data->sales_order_discount_name, 
-           $data->sales_order_discount_value, 
-           $data->sales_order_sum_weight, 
-           $data->sales_order_courier_code, 
-           $data->sales_order_courier_name, 
-           $data->sales_order_courier_waybill, 
-           $data->sales_order_sum_ongkir,
+        //    $data->sales_order_sum_product, 
+        //    $data->sales_order_discount_name, 
+        //    $data->sales_order_discount_value, 
+        //    $data->sales_order_sum_weight, 
+        //    $data->sales_order_courier_code, 
+        //    $data->sales_order_courier_name, 
+        //    $data->sales_order_courier_waybill, 
+        //    $data->sales_order_sum_ongkir,
            $data->sales_order_sum_total, 
+           $data->sales_order_sum_bayar, 
+           $data->sales_order_sum_kembalian, 
+           Helper::calculate(config('website.fee')) * $data->sales_order_sum_total
         ];
     }
 
@@ -116,14 +105,10 @@ class ReportSummaryOrderRepository extends Order implements FromCollection, With
     {
         return [
             'B' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-            'C' => NumberFormat::FORMAT_DATE_YYYYMMDD,
-            'E' => NumberFormat::FORMAT_TEXT,
+            'C' => NumberFormat::FORMAT_TEXT,
+            'E' => NumberFormat::FORMAT_NUMBER,
+            'F' => NumberFormat::FORMAT_NUMBER,
             'G' => NumberFormat::FORMAT_NUMBER,
-            'H' => NumberFormat::FORMAT_NUMBER,
-            'I' => NumberFormat::FORMAT_NUMBER,
-            'J' => NumberFormat::FORMAT_NUMBER,
-            'K' => NumberFormat::FORMAT_NUMBER,
-            'L' => NumberFormat::FORMAT_NUMBER,
         ];
     }
 }

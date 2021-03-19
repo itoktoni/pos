@@ -22,7 +22,7 @@
         {!! $errors->first($form.'status', '<p class="help-block">:message</p>') !!}
     </div>
 </div>
-
+<!-- 
 <div class="form-group">
     {!! Form::label('name', 'Order', ['class' => 'col-md-2 control-label']) !!}
     <div class="col-md-4 {{ $errors->has('finance_payment_sales_order_id') ? 'has-error' : ''}}">
@@ -36,7 +36,7 @@
         {!! $errors->first('finance_payment_reference', '<p class="help-block">:message</p>') !!}
     </div>
 
-</div>
+</div> -->
 
 <div class="form-group">
     @if ($action_function == 'update')
@@ -109,7 +109,7 @@
     </div>
 </div>
 
-
+<!-- 
 <div class="form-group">
     {!! Form::label('name', 'Order Paid', ['class' => 'col-md-2 control-label']) !!}
     <div class="col-md-4 {{ $errors->has($form.'paid') ? 'has-error' : ''}}">
@@ -133,4 +133,4 @@
         <h2>Total Order : {{ $model->order ? number_format($model->order->sales_order_total) : 0 }}</h2>
     </div>
     @endif
-</div>
+</div> -->

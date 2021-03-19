@@ -73,7 +73,7 @@
 
 </div>
 
-
+<!--
 <hr>
 
 <div class="form-group">
@@ -133,7 +133,6 @@
 
 <hr>
 
-<hr>
 
 <div class="form-group">
     {!! Form::label('name', 'Status', ['class' => 'col-md-2 control-label']) !!}
@@ -170,21 +169,37 @@
 
 
 <div class="form-group">
-    <label for="" class="col-md-2 control-label">{{ $model->sales_order_courier_name ?? 'Ongkir' }}</label>
-    <div class="col-md-4 {{ $errors->has('sales_order_sum_ongkir') ? 'has-error' : ''}}">
-        {!! Form::text('sales_order_sum_ongkir', null, ['class' => 'form-control', 'id' => 'to_phone']) !!}
-        {!! $errors->first('sales_order_sum_ongkir', '<p class="help-block">:message</p>') !!}
+    <label for="" class="col-md-2 control-label">Bayar</label>
+    <div class="col-md-4 {{ $errors->has('sales_order_sum_bayar') ? 'has-error' : ''}}">
+        {!! Form::text('sales_order_sum_bayar', null, ['class' => 'form-control', 'id' => 'to_phone']) !!}
+        {!! $errors->first('sales_order_sum_bayar', '<p class="help-block">:message</p>') !!}
     </div>
 
-    {!! Form::label('name', 'No. Resi', ['class' => 'col-md-2 control-label']) !!}
-    <div class="col-md-4 {{ $errors->has('sales_order_courier_waybill') ? 'has-error' : ''}}">
-        {!! Form::text('sales_order_courier_waybill', null, ['class' => 'form-control', 'id' => 'to_email']) !!}
-        {!! $errors->first('sales_order_courier_waybill', '<p class="help-block">:message</p>') !!}
+    {!! Form::label('name', 'Kembalian', ['class' => 'col-md-2 control-label']) !!}
+    <div class="col-md-4 {{ $errors->has('sales_order_sum_kembalian') ? 'has-error' : ''}}">
+        {!! Form::text('sales_order_sum_kembalian', null, ['class' => 'form-control', 'id' => 'to_email']) !!}
+        {!! $errors->first('sales_order_sum_kembalian', '<p class="help-block">:message</p>') !!}
     </div>
 
 </div>
 
 <hr>
+-->
+
+<div class="form-group">
+    {!! Form::label('name', 'Status', ['class' => 'col-md-2 control-label']) !!}
+    <div class="col-md-4 {{ $errors->has('sales_order_status') ? 'has-error' : ''}}">
+        {{ Form::select('sales_order_status', $status, null, ['class'=> 'form-control', 'id' => 'promo_id']) }}
+        {!! $errors->first('sales_order_status', '<p class="help-block">:message</p>') !!}
+    </div>
+
+    {!! Form::label('name', 'Order Date', ['class' => 'col-md-2 control-label']) !!}
+    <div class="col-md-4 {{ $errors->has('sales_order_date_order') ? 'has-error' : ''}}">
+        {!! Form::text('sales_order_date_order', $model->sales_order_date_order ?? date('Y-m-d'), ['class' =>
+        'form-control date']) !!}
+        {!! $errors->first('sales_order_date_order', '<p class="help-block">:message</p>') !!}
+    </div>
+</div>
 
 @include($folder.'::page.'.$template.'.sales.detail')
 @include($folder.'::page.'.$template.'.sales.script')

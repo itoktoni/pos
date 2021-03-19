@@ -180,14 +180,16 @@ class ReceiptPrinter
     public function printReceipt($with_items = true) {
         if ($this->printer) {
             // Get total, subtotal, etc
-            $subtotal = $this->getPrintableSummary('Subtotal', $this->subtotal);
             $tax = $this->getPrintableSummary('Tax', $this->tax);
+            $subtotal = $this->getPrintableSummary('Subtotal', $this->subtotal);
+            $bayar = $this->getPrintableSummary('Bayar', session('bayar'));
+            $kembalian = $this->getPrintableSummary('Kembalian',  session('bayar') - $this->grandtotal);
             $total = $this->getPrintableSummary('TOTAL', $this->grandtotal, true);
             $header = $this->getPrintableHeader(
-                'TID: ' . $this->transaction_id,
+                'TRX: ' . $this->transaction_id,
                 'MID: ' . $this->store->getMID()
             );
-            $footer = "Thank you for shopping!\n";
+            $footer = "Antrian: ".str_replace(config('website.prefix') . date('ym'), '', $this->transaction_id);
             // Init printer settings
             $this->printer->initialize();
             $this->printer->selectPrintMode();
@@ -232,19 +234,108 @@ class ReceiptPrinter
             $this->printer->selectPrintMode();
 
             $this->printer->setEmphasis(true);
-            $this->printer->text($subtotal);
+            $this->printer->text($bayar);
+            $this->printer->setEmphasis(false);
+            $this->printer->feed();
+
+            $this->printer->setEmphasis(true);
+            $this->printer->text($kembalian);
             $this->printer->setEmphasis(false);
             $this->printer->feed();
             
-            // Print qr code
-            // $this->printQRcode();
-            // Print receipt footer
-            $this->printer->feed();
+            //Print qr code
+            //$this->printQRcode();
+            //Print receipt footer
+            $this->printer->feed(1);
             $this->printer->setJustification(Printer::JUSTIFY_CENTER);
             $this->printer->text($footer);
             $this->printer->feed();
             // Print receipt date
             $this->printer->text(date('j F Y H:i:s'));
+            $this->printer->feed(3);
+            // Cut the receipt
+            $this->printer->cut();
+            $this->printer->close();
+        } else {
+            throw new Exception('Printer has not been initialized.');
+        }
+    }
+
+    public function printAntrian($with_items = true) {
+        if ($this->printer) {
+            // Get total, subtotal, etc
+            $tax = $this->getPrintableSummary('Tax', $this->tax);
+            $subtotal = $this->getPrintableSummary('Subtotal', $this->subtotal);
+            $bayar = $this->getPrintableSummary('Bayar', session('bayar'));
+            $kembalian = $this->getPrintableSummary('Kembalian',  session('bayar') - $this->grandtotal);
+            $total = $this->getPrintableSummary('TOTAL', $this->grandtotal, true);
+            $header = $this->getPrintableHeader(
+                'TRX: ' . $this->transaction_id,
+                'MID: ' . $this->store->getMID()
+            );
+            $footer = "Antrian: ".str_replace(config('website.prefix') . date('ym'), '', $this->transaction_id);
+            // Init printer settings
+            $this->printer->initialize();
+            $this->printer->selectPrintMode();
+            // Set margins
+            $this->printer->setPrintLeftMargin(1);
+            // Print receipt headers
+            $this->printer->setJustification(Printer::JUSTIFY_CENTER);
+            // Print logo
+            $this->printLogo();
+            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $this->printer->feed(1);
+            $this->printer->text('Antrian: '. $this->transaction_id);
+            $this->printer->selectPrintMode();
+            // $this->printer->text("{$this->store->getAddress()}\n");
+            // $this->printer->text($header . "\n");
+            $this->printer->feed(2);
+            // Print receipt title
+            // $this->printer->setEmphasis(true);
+            // $this->printer->text("RECEIPT\n");
+            // $this->printer->setEmphasis(false);
+            // $this->printer->feed();
+            // Print items
+            if ($with_items) {
+                $this->printer->setJustification(Printer::JUSTIFY_LEFT);
+                foreach ($this->items as $item) {
+                    $this->printer->text($item);
+                }
+                $this->printer->feed();
+            }
+            // Print subtotal
+            // $this->printer->setEmphasis(true);
+            // $this->printer->text($subtotal);
+            // $this->printer->setEmphasis(false);
+            // $this->printer->feed();
+            // Print tax
+            // $this->printer->text($tax);
+            // $this->printer->feed(2);
+            // Print grand total
+            $this->printer->selectPrintMode(Printer::MODE_DOUBLE_WIDTH);
+            $this->printer->text($total);
+            $this->printer->feed();
+            $this->printer->selectPrintMode();
+
+            // $this->printer->setEmphasis(true);
+            // $this->printer->text($bayar);
+            // $this->printer->setEmphasis(false);
+            // $this->printer->feed();
+
+            // $this->printer->setEmphasis(true);
+            // $this->printer->text($kembalian);
+            // $this->printer->setEmphasis(false);
+            // $this->printer->feed();
+            
+            // Print qr code
+            // $this->printQRcode();
+            // Print receipt footer
+            // $this->printer->feed();
+            // $this->printer->setJustification(Printer::JUSTIFY_CENTER);
+            // $this->printer->text($footer);
+            // $this->printer->feed();
+            // // Print receipt date
+            // $this->printer->text(date('j F Y H:i:s'));
             $this->printer->feed(3);
             // Cut the receipt
             $this->printer->cut();

@@ -93,6 +93,7 @@ class Product extends Model
         'item_category_description' => [false => 'Category'],
         'item_category_image' => [false => 'Category'],
         'item_product_min_order' => [false => 'Min Order'],
+        'item_product_min_stock' => [true => 'Min Stock'],
         'item_product_stroke' => [false => 'Buy'],
         'item_product_price' => [true => 'Price'],
         'item_product_weight' => [false => 'Gram'],

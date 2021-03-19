@@ -13,14 +13,14 @@ class Kernel extends ConsoleKernel {
      * @var array
      */
     protected $commands = [
-        'App\Console\Commands\Console',
-        'App\Console\Commands\SendEmail',
-        'App\Console\Commands\CancelOrder',
-        'App\Console\Commands\WaOrderCreated',
-        'App\Console\Commands\WaPaymentCreated',
-        'App\Console\Commands\WaOrderApproved',
-        'App\Console\Commands\WaPaymentApproved',
-        'App\Console\Commands\TrackingOrder',
+        'App\Console\Commands\CheckStock',
+        // 'App\Console\Commands\SendEmail',
+        // 'App\Console\Commands\CancelOrder',
+        // 'App\Console\Commands\WaOrderCreated',
+        // 'App\Console\Commands\WaPaymentCreated',
+        // 'App\Console\Commands\WaOrderApproved',
+        // 'App\Console\Commands\WaPaymentApproved',
+        // 'App\Console\Commands\TrackingOrder',
     ];
 
     /**

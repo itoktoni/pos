@@ -14,32 +14,33 @@
 
             <div class="panel-body line">
 
-                <div class="col-md-2 col-ld-2 mb-sm">
+                <div class="col-md-12 col-lg-12">
 
-                    <input type="hidden" name="item_detail_product_id" value="{{ $model->item_product_id }}">
-                    
-                    <img width="100%" class="img-thumbnail"
-                        src="{{ Helper::files($template.'/thumbnail_'.$model->item_product_image) }}" alt="">
-                </div>
-
-                <div class="col-md-10 col-lg-10">
-                    
                     <div class="form-group">
 
-                    {!! Form::label('name', 'Branch', ['class' => 'col-md-2 control-label']) !!}
-                        <div class="col-md-4 {{ $errors->has('item_detail_branch_id') ? 'has-error' : ''}}">
+                        <input type="hidden" name="item_detail_product_id" value="{{ request()->get('code') }}">
+
+                        {!! Form::label('name', 'Branch', ['class' => 'col-md-1 control-label']) !!}
+                        <div class="col-md-3 {{ $errors->has('item_detail_branch_id') ? 'has-error' : ''}}">
                             {{ Form::select('item_detail_branch_id', $branch, $data->item_detail_branch_id ?? null, ['class'=> 'form-control', 'data-plugin-selectTwo']) }}
                             {!! $errors->first('item_detail_branch_id', '<p class="help-block">:message</p>') !!}
                         </div>
 
-                        {!! Form::label('name', 'Stock Qty', ['class' => 'col-md-2 control-label']) !!}
-                        <div class="col-md-4 {{ $errors->has('item_detail_stock_qty') ? 'has-error' : ''}}">
+                        {!! Form::label('name', 'Stock Qty', ['class' => 'col-md-1 control-label']) !!}
+                        <div class="col-md-3 {{ $errors->has('item_detail_stock_qty') ? 'has-error' : ''}}">
                             {!! Form::text('item_detail_stock_qty', $data->item_detail_stock_qty ?? null, ['class' =>
                             'form-control', ]) !!}
                             {!! $errors->first('item_detail_stock_qty', '<p class="help-block">:message</p>') !!}
                         </div>
+
+                        {!! Form::label('name', 'Stock Active', ['class' => 'col-md-1 control-label']) !!}
+                        <div class="col-md-3 {{ $errors->has('item_detail_stock_enable') ? 'has-error' : ''}}">
+                            {{ Form::select('item_detail_stock_enable', ['1' => 'Active', '0' => 'Non Active'], $data->item_detail_stock_enable ?? null, ['class'=> 'form-control', 'data-plugin-selectTwo']) }}
+                            {!! $errors->first('item_detail_stock_enable', '<p class="help-block">:message</p>') !!}
+                        </div>
+
                     </div>
-                    
+
                 </div>
 
             </div>

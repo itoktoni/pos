@@ -84,6 +84,8 @@ class ReportDetailOrderRepository extends Order implements FromView, ShouldAutoS
                 'sales_order_sum_discount',
                 'sales_order_sum_ongkir',
                 'sales_order_sum_total',
+                'sales_order_sum_bayar',
+                'sales_order_sum_kembalian',
                 'sales_order_payment_date',
                 'sales_order_payment_bank_from',
                 'sales_order_payment_bank_to_id',

@@ -40,13 +40,13 @@ class Category extends Model
   public $datatable = [
     'item_category_id'          => [false => 'ID'],
     'item_category_name'        => [true => 'Name'],
-    'item_category_flag'        => [true => 'Flag'],
+    'item_category_flag'        => [false => 'Flag'],
     'item_category_slug'        => [false => 'Slug'],
-    'item_category_image'        => [true => 'Images'],
+    'item_category_image'        => [false => 'Images'],
     'item_category_icon'        => [false => 'Icon'],
-    'item_category_homepage'        => [true => 'Homepage'],
-    'item_category_status'        => [true => 'Status'],
-    'item_category_description' => [false => 'Description'],
+    'item_category_homepage'        => [false => 'Homepage'],
+    'item_category_status'        => [false => 'Status'],
+    'item_category_description' => [true => 'Description'],
     'item_category_created_by'  => [false => 'Updated At'],
   ];
 

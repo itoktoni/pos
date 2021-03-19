@@ -20,6 +20,7 @@ use Modules\Item\Dao\Repositories\VariantRepository;
 use Modules\Item\Http\Requests\ProductDetailRequest;
 use Plugin\Alert;
 use Plugin\Helper;
+use Plugin\Notes;
 use Plugin\Response;
 
 class ProductController extends Controller
@@ -116,20 +117,21 @@ class ProductController extends Controller
         if (request()->isMethod('POST')) {
             $arr = $request->all();
             unset($arr['_token'], $arr['code']);
-            if ($request->item_detail_variant_id) {
+            if ($request->item_detail_id) {
 
                 $check = ProductDetail::find($request->item_detail_id);
 
             } else {
 
                 $check = ProductDetail::where([
-                    'item_detail_product_id' => $request->item_detail_product_id,
+                    'item_detail_product_id' => $request->code,
                     'item_detail_branch_id' => $request->item_detail_branch_id,
                 ]);
             }
 
             if ($check->count() > 0) {
                 $check->update($arr);
+                Alert::update();
 
             } else {
                 ProductDetail::insert($arr);

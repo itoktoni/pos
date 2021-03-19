@@ -91,9 +91,9 @@ class PaymentController extends Controller
     {
         if (request()->isMethod('POST')) {
             $datatable = $service->setRaw(['finance_payment_status', 'finance_payment_payment_account_id', 'finance_payment_amount', 'finance_payment_approve_amount'])->datatable(self::$model);
-            $datatable->editColumn('finance_payment_account_id', function ($data) {
-                return $data->account->finance_account_name;
-            });
+            // $datatable->editColumn('finance_payment_account_id', function ($data) {
+            //     return $data->account->finance_account_name;
+            // });
 
             $datatable->editColumn('finance_payment_amount', function ($data) {
                 return number_format($data->finance_payment_amount);

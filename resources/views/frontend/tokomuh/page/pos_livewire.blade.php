@@ -71,7 +71,7 @@
                     wire:click="actionCart('{{ $product->item_product_id }}')">
                     <img style="width: 100%;" src="{{ Helper::files('product/'.$product->item_product_image) }}"
                         class="img-fluid" alt="...">
-                        <h6 style="font-size: 12px;text-align:center;margin-top:5px">{{ $product->item_product_name }}</h6>
+                    <h6 style="font-size: 12px;text-align:center;margin-top:5px">{{ $product->item_product_name }}</h6>
                 </div>
                 @endforeach
             </div>
@@ -82,7 +82,7 @@
     @php
     $bayar = session('bayar');
     $total = Cart::getSubTotal();
-    $kembalian = $total - $bayar;
+    $kembalian = $bayar > 0 ? $bayar - $total : 0;
     @endphp
 
     <div class="d-md-none" style="background-color: #fff;">
@@ -95,7 +95,7 @@
                             <tr>
                                 <th class="name">Total <h4>{{ Helper::createRupiah($total) }}</h4>
                                 </th>
-                                <th>Uang <h4 style="cursor: pointer;" wire:click="resetBayar()">
+                                <th>Uang <h4 style="cursor: pointer;">
                                         {{ Helper::createRupiah($bayar) }}</h4>
                                 </th>
                                 <th>Kembalian <h4>{{ Helper::createRupiah($kembalian) }}</h4>
@@ -106,7 +106,7 @@
                 </div>
             </div>
 
-            <div class="col-xl-6 col-lg-5 col-md-4 col-sm-12">
+            <div class="col-xl-5 col-lg-4 col-md-3 col-sm-12">
                 <div class="row mt-2">
                     @foreach($data_uang as $key => $value)
                     <div class="col-xl-2 col-lg-4 col-md-4 col-sm-2 mb-2" wire:click="actionBayar('{{ $value }}')">
@@ -116,19 +116,11 @@
                 </div>
             </div>
 
-            <div class="col-lg-2 col-md-2 col-sm-12 mt-2 mb-3">
-                <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-success col-md-10 mb-2" wire:click="actionReset()">Baru</button>
-                        <button class="btn btn-danger col-md-10" wire:click="createOrder()">Cetak</button>
-                    </div>
-                </div>
-            </div>
         </div>
 
     </div>
 
-    <div class="fixed-bottom d-none d-md-block" style="background-color: #fff;">
+    <div class="fixed-bottom d-none d-md-block" style="background-color: #fff;margin-right:30px">
 
         <div class="row align-items-start">
             <div class="col-xl-4 col-md-6 col-lg-5 col-sm-12">
@@ -136,12 +128,20 @@
                     <table class="table border">
                         <thead>
                             <tr>
-                                <th class="name">Total <h4>{{ Helper::createRupiah($total) }}</h4>
+                                <th class="name">Total
+                                    <h2>
+                                        {{ Helper::createRupiah($total) }}
+                                    </h2>
                                 </th>
-                                <th>Uang <h4 style="cursor: pointer;" wire:click="resetBayar()">
-                                        {{ Helper::createRupiah($bayar) }}</h4>
+                                <th>Uang
+                                    <h2 style="cursor: pointer;" wire:click="resetBayar()">
+                                        {{ Helper::createRupiah($bayar) }}
+                                    </h2>
                                 </th>
-                                <th>Kembalian <h4>{{ Helper::createRupiah($kembalian) }}</h4>
+                                <th>Kembalian
+                                    <h2>
+                                        {{ Helper::createRupiah($kembalian) }}
+                                    </h2>
                                 </th>
                             </tr>
                         </thead>
@@ -149,8 +149,8 @@
                 </div>
             </div>
 
-            <div class="col-xl-6 col-lg-5 col-md-4 col-sm-12">
-                <div class="row mt-2">
+            <div class="col-xl-5 col-lg-4 col-md-4 col-sm-12">
+                <div class="row mt-1">
                     @foreach($data_uang as $key => $value)
                     <div class="col-xl-2 col-lg-4 col-md-4 col-sm-2 mb-2" wire:click="actionBayar('{{ $value }}')">
                         <img class="img-fluid" src="{{ Helper::files('uang/'.$key) }}" alt="">
@@ -159,11 +159,21 @@
                 </div>
             </div>
 
-            <div class="col-lg-2 col-md-2 col-sm-12 mt-2">
+            <div class="col-lg-3 col-md-3 col-sm-12 mt-1">
                 <div class="row">
-                    <div class="col-md-12">
-                        <button class="btn btn-success col-md-10 mb-2" wire:click="actionReset()">Baru</button>
-                        <button class="btn btn-danger col-md-10" wire:click="createOrder()">Cetak</button>
+                    <div class="col-md-6">
+                        <button class="btn btn-success btn-block mb-2" wire:click="actionReset()">Baru</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button class="btn btn-danger btn-block" wire:click="resetBayar()">Reset</button>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button style="height: 120%" class="btn btn-primary btn-block mb-2" wire:click="printAntrian()">Antrian</button>
+                    </div>
+                    <div class="col-md-6">
+                        <button style="height: 120%" class="btn btn-dark btn-block" wire:click="createOrder()">Cetak</button>
                     </div>
                 </div>
             </div>

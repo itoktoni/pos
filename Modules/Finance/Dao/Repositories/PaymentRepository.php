@@ -14,7 +14,7 @@ class PaymentRepository extends Payment implements MasterInterface
     public function dataRepository()
     {
         $list = Helper::dataColumn($this->datatable, $this->getKeyName());
-        return $this->select($list)->with('account');
+        return $this->select($list);
     }
 
     public function saveRepository($request)

@@ -31,9 +31,6 @@
         {!! Form::close() !!}
 
     </div>
-
-    @include($folder.'::page.'.$template.'.upload')
-
 </div>
 
 @endsection

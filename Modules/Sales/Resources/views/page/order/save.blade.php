@@ -27,10 +27,6 @@
             <div class="navbar-fixed-bottom" id="menu_action">
                 <div class="text-right" style="padding:5px">
                     <a id="linkMenu" href="{!! route($module.'_data') !!}" class="btn btn-warning">Back</a>
-                    @if($action_function == 'update')
-                    <a target="__blank" href="{!! route($module.'_print_order', ['code'=> $model->{$key}]) !!}"
-                        class="btn btn-danger">Invoice</a>
-                    @endif    
                     <button type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>

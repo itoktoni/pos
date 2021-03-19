@@ -39,39 +39,20 @@
 
                     <div class="form-group">
 
-                        {!! Form::label('name', 'Promo', ['class' => 'col-md-2 control-label']) !!}
-                        <div class="col-md-4 {{ $errors->has('promo') ? 'has-error' : ''}}">
-                            {{ Form::select('promo', $promo, old('promo') ?? null, ['class'=> 'form-control']) }}
-                            {!! $errors->first('promo', '<p class="help-block">:message</p>') !!}
-                        </div>
-
-                        {!! Form::label('name', 'Status', ['class' => 'col-md-2 control-label']) !!}
-                        <div class="col-md-4 {{ $errors->has('status') ? 'has-error' : ''}}">
-                            {{ Form::select('status', $status, old('status') ?? null, ['class'=> 'form-control']) }}
-                            {!! $errors->first('status', '<p class="help-block">:message</p>') !!}
-                        </div>
-
-                    </div>
-
-                    <div class="form-group">
-
-                        {!! Form::label('name', 'Branch', ['class' => 'col-md-2 control-label']) !!}
-                        <div class="col-md-4 {{ $errors->has('branch') ? 'has-error' : ''}}">
+                        {!! Form::label('name', 'Branch', ['class' => 'col-md-1 control-label']) !!}
+                        <div class="col-md-3 {{ $errors->has('branch') ? 'has-error' : ''}}">
                             {{ Form::select('branch', $data_branch, old('branch') ?? null, ['class'=> 'form-control']) }}
                             {!! $errors->first('branch', '<p class="help-block">:message</p>') !!}
                         </div>
 
-                        {!! Form::label('name', 'Courier', ['class' => 'col-md-2 control-label']) !!}
-                        <div class="col-md-4 {{ $errors->has('courier') ? 'has-error' : ''}}">
-                            {{ Form::select('courier', $data_courier, old('courier') ?? null, ['class'=> 'form-control']) }}
-                            {!! $errors->first('courier', '<p class="help-block">:message</p>') !!}
+                        {!! Form::label('name', 'Status', ['class' => 'col-md-1 control-label']) !!}
+                        <div class="col-md-3 {{ $errors->has('status') ? 'has-error' : ''}}">
+                            {{ Form::select('status', $status, old('status') ?? null, ['class'=> 'form-control']) }}
+                            {!! $errors->first('status', '<p class="help-block">:message</p>') !!}
                         </div>
 
-                    </div>
-                    <div class="form-group">
-
-                    {!! Form::label('name', 'Order', ['class' => 'col-md-2 control-label']) !!}
-                        <div class="col-md-4 {{ $errors->has('order') ? 'has-error' : ''}}">
+                        {!! Form::label('name', 'Order', ['class' => 'col-md-1 control-label']) !!}
+                        <div class="col-md-3 {{ $errors->has('order') ? 'has-error' : ''}}">
                             {{ Form::select('order', $data_order, old('order') ?? null, ['class'=> 'form-control']) }}
                             {!! $errors->first('order', '<p class="help-block">:message</p>') !!}
                         </div>
