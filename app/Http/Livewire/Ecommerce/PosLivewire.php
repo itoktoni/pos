@@ -3,6 +3,7 @@
 namespace App\Http\Livewire\Ecommerce;
 
 use App\Dao\Facades\BranchFacades;
+use charlieuki\ReceiptPrinter\ReceiptPrinter as ReceiptPrinter;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
@@ -41,22 +42,18 @@ class PosLivewire extends Component
     public $data_wishlist = [];
 
     public $data_uang = [
+        '0.jpg' => '1000',
         '1.jpg' => '5000',
         '2.jpg' => '10000',
         '3.jpg' => '20000',
         '4.jpg' => '50000',
-        '5.jpg' => '75000',
+        // '5.jpg' => '75000',
         '6.jpg' => '100000',
     ];
 
     protected $listeners = [
-        'updateCart',
+        'updateProduct',
     ];
-
-    public function updateCart()
-    {
-
-    }
 
     public function updateQty($id, $sign, $qty = 1)
     {
@@ -81,7 +78,7 @@ class PosLivewire extends Component
             } else {
 
                 Cart::update($id, $formula);
-                $this->emit('updateCart');
+                $this->emit('updateProduct');
             }
         }
     }
@@ -89,7 +86,7 @@ class PosLivewire extends Component
     public function resetBayar()
     {
         Session::remove('bayar');
-        $this->emit('updateCart');
+        $this->emit('updateProduct');
     }
 
     public function actionBayar($value)
@@ -208,29 +205,12 @@ class PosLivewire extends Component
             Cart::add($id, $product->item_product_name, $product->item_product_price, 1, $product->toArray());
         }
 
-        $this->emit('updateCart');
+        $this->emit('updateProduct');
     }
 
     public function createOrder()
     {
         $this->total = Cart::getTotal();
-
-        $rules = [
-
-            'total' => 'required|numeric|min:1',
-        ];
-
-        $this->validate($rules, [
-            'checkout.*.branch_ongkir.required' => 'Please Select Courier in Red line',
-            'phone.required' => 'Please input phone number in Cart',
-            'total.required' => 'Please input name in Cart',
-            'address.required' => 'Please input address in Cart',
-            'area.required' => 'Please input Shipping area in Cart',
-            'total.min' => 'Please Input Shipping area',
-        ], [
-            'checkout.*.branch_ongkir' => 'Please Select Courier',
-        ]);
-
         $this->completed = true;
 
         DB::beginTransaction();
@@ -254,6 +234,8 @@ class PosLivewire extends Component
         $order['sales_order_from_address'] = $branch->branch_address;
         $order['sales_order_from_area'] = $branch->branch_rajaongkir_area_id;
 
+        $order['sales_order_sum_bayar'] = session('bayar');
+        $order['sales_order_sum_kembalian'] = $this->total - session('bayar');
         $order['sales_order_sum_total'] = $this->total;
 
         $check_order = OrderFacades::saveRepository($order);
@@ -276,19 +258,19 @@ class PosLivewire extends Component
 
                 $check_item = OrderDetailFacades::saveRepository($product);
 
-
                 $item_detail = ProductDetail::where('item_detail_product_id', $item->id)
-                ->where('item_detail_branch_id', auth()->user()->branch);
-                if($item_detail->get()->count() > 0){
+                    ->where('item_detail_branch_id', auth()->user()->branch);
+                if ($item_detail->get()->count() > 0) {
 
                     $total_qty = $item_detail->get()->sum('item_detail_stock_qty');
                     $selisih = $total_qty - $item->quantity;
-                    
+
                     $item_detail->delete();
 
-                    ProductDetail::create([
+                    $check = ProductDetail::create([
                         'item_detail_stock_qty' => $selisih,
-                        'item_detail_branch_id' => auth()->user()->branch
+                        'item_detail_branch_id' => auth()->user()->branch,
+                        'item_detail_product_id' => $item->id,
                     ]);
                 }
 
@@ -308,16 +290,64 @@ class PosLivewire extends Component
 
         if ($this->completed) {
 
-            Session::forget('checkout');
-            Cart::clear();
-            Cart::clearCartConditions();
+            $this->printPos($autonumber_order);
         }
 
-        $this->emit('updateCart');
+        // $this->emit('updateProduct');
     }
 
-    public function actionPrint()
+    public function printPos($order_id)
     {
+        $branch = BranchFacades::find(auth()->user()->branch);
+        // Set params
+        $mid = $branch->branch_name;
+        $store_name = config('website.name');
+        $store_address = $branch->branch_address;
+        $store_phone = $branch->branch_phone;
+        $transaction_id = $order_id;
+       
+        // Init printer
+        $printer = new ReceiptPrinter();
+        $printer->init(
+            config('receiptprinter.connector_type'),
+            config('receiptprinter.connector_descriptor')
+        );
+
+        // $printer->setLogo("public/files/logo/test.png");
+
+        // Set store info
+        $printer->setStore($mid, $store_name, $store_address, $store_phone, null, null);
+
+        // Add items
+        foreach (Cart::getContent() as $item) {
+            $printer->addItem(
+                $item->name,
+                $item->quantity,
+                $item->price
+            );
+        }
+
+        // Calculate total
+        // $printer->calculateSubTotal();
+        $printer->calculateGrandTotal();
+
+        // Set transaction ID
+        $printer->setTransactionID($transaction_id);
+
+        // Set qr code
+        // $printer->setQRcode([
+        //     'tid' => $transaction_id,
+        // ]);
+
+        // Print receipt
+        $printer->printReceipt();
+        // $printer->printLogo();
+
+        Session::forget('bayar');
+        Cart::clear();
+        Cart::clearCartConditions();
+
+        $this->emit('updateProduct');
 
     }
 }

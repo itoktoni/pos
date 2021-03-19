@@ -54,6 +54,17 @@
       0 => 'Barryvdh\\Elfinder\\ElfinderServiceProvider',
     ),
   ),
+  'charlieuki/receiptprinter' => 
+  array (
+    'providers' => 
+    array (
+      0 => 'charlieuki\\ReceiptPrinter\\ReceiptPrinterServiceProvider',
+    ),
+    'aliases' => 
+    array (
+      'ReceiptPrinter' => 'charlieuki\\ReceiptPrinter\\Facades\\ReceiptPrinter',
+    ),
+  ),
   'consoletvs/charts' => 
   array (
     'providers' => 

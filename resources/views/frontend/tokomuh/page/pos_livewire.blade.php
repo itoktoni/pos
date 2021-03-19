@@ -20,9 +20,9 @@
 
             <div class="row">
                 <div class="col-md-5 col-lg-6">
-                    <h4 class="btn btn-info btn-block">
+                    <a class="btn btn-info btn-block mb-2" href="{{ route('logout') }}">
                         {{ auth()->user()->name ?? '' }}
-                    </h4>
+                    </a>
                 </div>
 
                 <div class="col-md-7 col-lg-6">
@@ -71,6 +71,7 @@
                     wire:click="actionCart('{{ $product->item_product_id }}')">
                     <img style="width: 100%;" src="{{ Helper::files('product/'.$product->item_product_image) }}"
                         class="img-fluid" alt="...">
+                        <h6 style="font-size: 12px;text-align:center;margin-top:5px">{{ $product->item_product_name }}</h6>
                 </div>
                 @endforeach
             </div>
