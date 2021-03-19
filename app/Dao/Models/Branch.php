@@ -42,7 +42,7 @@ class Branch extends Model
         'branch_map' => [false => 'Name'],
         'branch_company_id' => [false => 'Company'],
         'branch_rajaongkir_area_id' => [false => 'Name'],
-        'company_contact_name' => [true => 'Company'],
+        'company_contact_name' => [false => 'Company'],
         'rajaongkir_area_province_name' => [true => 'Province'],
         'rajaongkir_area_city_name' => [true => 'City'],
         'rajaongkir_area_name' => [true => 'Area'],
