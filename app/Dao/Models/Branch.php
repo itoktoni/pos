@@ -28,8 +28,8 @@ class Branch extends Model
     public $incrementing = false;
     public $rules = [
         'branch_name' => 'required',
-        'branch_company_id' => 'required',
-        'branch_rajaongkir_area_id' => 'required',
+        // 'branch_company_id' => 'required',
+        // 'branch_rajaongkir_area_id' => 'required',
     ];
 
     public $searching = 'branch_name';
