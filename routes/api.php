@@ -296,7 +296,7 @@ Route::match(
     function ($code) {
         $data = request()->get('data');
         ProductDetail::where('item_detail_branch_id', $code)->delete();
-        ProductDetail::create($data);
+        ProductDetail::insert($data);
         return true;
     }
 )->name('sync_product_api');

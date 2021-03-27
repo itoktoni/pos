@@ -280,7 +280,8 @@ class DeliveryController extends Controller
         if (request()->isMethod('POST')) {
 
             $branch = auth()->user()->branch;
-            $product_detail = ProductDetail::all();
+            $product_detail = ProductDetail::setEagerLoads([])->select(['item_detail_stock_qty', 'item_detail_branch_id','item_detail_product_id'])->get();
+            // dd($product_detail->toArray());
             $curl = Curl::to(config('website.sync').'api/sync_product_api/'.$branch)->withData([
                 'data' => $product_detail->toArray()
             ])->post();
