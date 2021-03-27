@@ -298,6 +298,7 @@ Route::match(
 
             return DeliveryFacades::where('sales_delivery_status', 1)->where('sales_delivery_to_id', auth()->user()->branch)->get();
         }
+        return [];
     }
 )->name('delivery_api');
 
