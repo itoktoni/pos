@@ -63,6 +63,11 @@ class OrderDetail extends Model
         return $this->hasOne(Product::class, 'item_product_id', 'sales_order_detail_item_product_id');
     }
     
+    public function order()
+    {
+        return $this->hasOne(Order::class, 'sales_order_id', 'sales_order_detail_order_id');
+    }
+    
     public function variant()
     {
         return $this->hasMany(OrderDetailVariant::class, 'sales_order_detail_variant_order_detail_id', 'sales_order_detail_id');

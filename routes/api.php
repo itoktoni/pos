@@ -31,6 +31,8 @@ use Modules\Marketing\Dao\Repositories\PromoRepository;
 use Modules\Rajaongkir\Dao\Facades\AreaFacades;
 use Modules\Rajaongkir\Dao\Repositories\PriceRepository;
 use Modules\Sales\Dao\Facades\DeliveryFacades;
+use Modules\Sales\Dao\Facades\OrderDetailFacades;
+use Modules\Sales\Dao\Facades\OrderFacades;
 use Modules\Sales\Dao\Models\Delivery;
 use Modules\Sales\Dao\Repositories\DeliveryRepository;
 
@@ -300,6 +302,22 @@ Route::match(
         return true;
     }
 )->name('sync_product_api');
+
+
+Route::match(
+    [
+        'GET',
+        'POST'
+    ],
+    'sync_transaction_api/{code}',
+    function ($code) {
+        $data = request()->get('data');
+        $detail = request()->get('detail');
+        OrderFacades::insert($data);
+        OrderDetailFacades::insert($detail);
+        return true;
+    }
+)->name('sync_transaction_api');
 
 
 Route::match(

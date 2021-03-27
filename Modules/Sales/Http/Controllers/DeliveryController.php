@@ -6,6 +6,7 @@ use App\Dao\Repositories\BranchRepository;
 use App\Dao\Repositories\CompanyRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Services\MasterService;
+use Carbon\Carbon;
 use Illuminate\Http\Request as Request;
 use Ixudra\Curl\Facades\Curl;
 use Modules\Crm\Dao\Repositories\CustomerRepository;
@@ -16,6 +17,8 @@ use Modules\Item\Dao\Facades\ProductFacades;
 use Modules\Item\Dao\Models\ProductDetail;
 use Modules\Item\Dao\Repositories\ProductRepository;
 use Modules\Marketing\Dao\Repositories\PromoRepository;
+use Modules\Sales\Dao\Facades\OrderDetailFacades;
+use Modules\Sales\Dao\Facades\OrderFacades;
 use Modules\Sales\Dao\Models\Delivery;
 use Modules\Sales\Dao\Repositories\DeliveryRepository;
 use Modules\Sales\Dao\Repositories\OrderRepository;
@@ -281,7 +284,6 @@ class DeliveryController extends Controller
 
             $branch = auth()->user()->branch;
             $product_detail = ProductDetail::setEagerLoads([])->select(['item_detail_stock_qty', 'item_detail_branch_id','item_detail_product_id'])->get();
-            // dd($product_detail->toArray());
             $curl = Curl::to(config('website.sync').'api/sync_product_api/'.$branch)->withData([
                 'data' => $product_detail->toArray()
             ])->post();
@@ -301,28 +303,52 @@ class DeliveryController extends Controller
 
     public function transaction()
     {
+        $order = OrderFacades::select([
+            'sales_order_id',
+            'sales_order_created_at',
+            'sales_order_date_order',
+            'sales_order_from_id',
+            'sales_order_from_name',
+            'sales_order_from_phone',
+            'sales_order_from_email',
+            'sales_order_from_address',
+            'sales_order_from_area',
+            'sales_order_status',
+            'sales_order_sum_kembalian',
+            'sales_order_sum_bayar',
+            'sales_order_sum_total',
+            'sales_order_core_user_id',
+        ])->setEagerLoads([])->where('sales_order_from_id', auth()->user()->branch)
+        ->whereDate('sales_order_date_order', Carbon::today())->get();
+            
+        $detail = OrderDetailFacades::join(OrderFacades::getTable(), OrderFacades::getKeyName(), 'sales_order_detail_order_id')
+        ->setEagerLoads([])
+        ->whereDate('sales_order_date_order', Carbon::today())
+        ->select([
+            'sales_order_detail_order_id',
+            'sales_order_detail_item_product_detai_id',
+            'sales_order_detail_item_product_id',
+            'sales_order_detail_qty',
+            'sales_order_detail_price',
+            'sales_order_detail_total',
+        ])->get();
+
         if (request()->isMethod('POST')) {
 
+
+
             $branch = auth()->user()->branch;
-            $curl = Curl::to(config('website.sync').'api/delivery_api/'.$branch)->get();
-            $data = json_decode($curl);
-            return DataTables::of($data)
-                ->addColumn('checkbox', function ($model) {
-                    return '<input type="checkbox" name="id[]" value="{{ $model->sales_delivery_id }}">';
-                })
-                ->addColumn('action', function ($model) {
-                    return '<div class="action text-center"><a href="' . route('sync_order_sync') . '?code=' . $model->sales_delivery_id . '" class="btn btn-warning btn-xs">Sync</a></div>';
-                })
-                ->make(true);
+            $product_detail = ProductDetail::setEagerLoads([])->select(['item_detail_stock_qty', 'item_detail_branch_id','item_detail_product_id'])->get();
+            $curl = Curl::to(config('website.sync').'api/sync_transaction_api/'.$branch)->withData([
+                'data' => $product_detail->toArray(),
+                'detail' => $detail->toArray()
+            ])->post();
+
+            Alert::update('Success Syncronize');
         }
 
-        return view(Helper::setViewData())->with([
-            'fields' => [
-                'sales_delivery_id' => 'Delivery Code',
-                'sales_delivery_date' => 'Delivery Date',
-                'sales_delivery_notes_internal' => 'Notes',
-                'sales_delivery_sum_total' => 'Total',
-            ],
+        return view(Helper::setViewForm($this->template, 'transaction', $this->folder))->with([
+            'order' => $order,
             'template' => $this->template,
         ]);
     }
