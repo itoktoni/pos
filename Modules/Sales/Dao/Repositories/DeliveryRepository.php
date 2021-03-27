@@ -2,6 +2,7 @@
 
 namespace Modules\Sales\Dao\Repositories;
 
+use App\Dao\Facades\BranchFacades;
 use Plugin\Notes;
 use Plugin\Helper;
 use Illuminate\Support\Facades\DB;
@@ -19,8 +20,7 @@ class DeliveryRepository extends Delivery implements MasterInterface
     {
         $list = Helper::dataColumn($this->datatable, $this->getKeyName());
         return $this->select($list)
-        ->leftJoin(CustomerFacades::getTable(),CustomerFacades::getKeyName(),'sales_delivery_to_id')
-        ->leftJoin(CompanyFacades::getTable(),CompanyFacades::getKeyName(),'sales_delivery_from_id');
+        ->leftJoin(BranchFacades::getTable(),BranchFacades::getKeyName(),'sales_delivery_to_id');
     }
 
     public function userRepository($id)

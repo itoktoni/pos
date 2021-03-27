@@ -70,7 +70,7 @@ class Delivery extends Model
     public $datatable = [
         'sales_delivery_id' => [true => 'Code'],
         'sales_delivery_date' => [true => 'Order Date'],
-        'crm_customer_name' => [true => 'Branch'],
+        'branch_name' => [true => 'Branch'],
         'sales_delivery_to_name' => [false => 'Contact'],
         'sales_delivery_sum_total' => [true => 'Total'],
         'sales_delivery_status' => [true => 'Status'],
