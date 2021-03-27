@@ -236,7 +236,8 @@ class DeliveryController extends Controller
     {
         if (request()->isMethod('POST')) {
 
-            $curl = Curl::to(config('website.sync').'api/delivery_api')->get();
+            $branch = auth()->user()->branch;
+            $curl = Curl::to(config('website.sync').'api/delivery_api/'.$branch)->get();
             $data = json_decode($curl);
             return DataTables::of($data)
                 ->addColumn('checkbox', function ($model) {

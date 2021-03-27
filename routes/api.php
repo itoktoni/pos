@@ -292,12 +292,9 @@ Route::match(
         'GET',
         'POST'
     ],
-    'delivery_api',
-    function () {
-        if(auth()->check()){
-
-            return DeliveryFacades::where('sales_delivery_status', 1)->where('sales_delivery_to_id', auth()->user()->branch)->get();
-        }
+    'delivery_api/{code}',
+    function ($code) {
+            return DeliveryFacades::where('sales_delivery_status', 1)->where('sales_delivery_to_id', $code)->get();
         return [];
     }
 )->name('delivery_api');
