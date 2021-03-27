@@ -294,9 +294,10 @@ Route::match(
     ],
     'delivery_api',
     function () {
+        if(auth()->check()){
 
-        $query = new DeliveryRepository();
-        return $query->where('sales_delivery_status', 1)->get();
+            return DeliveryFacades::where('sales_delivery_status', 1)->where('sales_delivery_to_id', auth()->user()->branch)->get();
+        }
     }
 )->name('delivery_api');
 
