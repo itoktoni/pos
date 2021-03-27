@@ -76,7 +76,7 @@ class Product extends Model
         'item_product_sell' => 'required',
     ];
 
-    // public $with = ['category', 'brand', 'detail'];
+    public $with = ['category'];
 
     const CREATED_AT = 'item_product_created_at';
     const UPDATED_AT = 'item_product_updated_at';

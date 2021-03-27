@@ -48,8 +48,11 @@
                         <thead>
                             <tr>
                                 <th class="text-left col-md-1">ID</th>
-                                <th class="text-left col-md-4">Product Name and Description</th>
+                                <th class="text-left col-md-2">Category</th>
+                                <th class="text-left col-md-4">Product Name</th>
                                 <th class="text-right col-md-1">Qty</th>
+                                <th class="text-right col-md-1">Price</th>
+                                <th class="text-right col-md-1">Total</th>
                             </tr>
                         </thead>
                         <tbody class="markup">
@@ -59,17 +62,45 @@
                                     {{ $item->sales_delivery_detail_item_product_id ?? '' }}
                                 </td>
                                 <td>
+                                    {{ $item->product->category->item_category_name ?? '' }}
+                                </td>
+                                <td>
                                     {{ $item->product->item_product_name ?? '' }}
                                 </td>
                                 <td class="text-right">
                                     {{ $item->sales_delivery_detail_qty ?? '' }}
                                 </td>
-                                <input type="hidden" value="{{ $item->sales_delivery_detail_item_product_id }}" name="detail[{{ $loop->index }}][id]">
-                                <input type="hidden" value="{{ $item->sales_delivery_detail_qty }}" name="detail[{{ $loop->index }}][qty]">
-                                <input type="hidden" value="{{ auth()->user()->branch }}" name="detail[{{ $loop->index }}][branch]">
+
+                                <td class="text-right">
+                                    {{ Helper::createRupiah($item->sales_delivery_detail_price) ?? '' }}
+                                </td>
+                                <td class="text-right">
+                                    {{ Helper::createRupiah($item->sales_delivery_detail_total) ?? '' }}
+                                </td>
+
+                                <input type="hidden" value="{{ $item->sales_delivery_detail_item_product_id }}"
+                                    name="detail[{{ $loop->index }}][id]">
+                                <input type="hidden" value="{{ $item->product->category->item_category_id }}"
+                                    name="detail[{{ $loop->index }}][category]">
+                                <input type="hidden" value="{{ $item->sales_delivery_detail_qty }}"
+                                    name="detail[{{ $loop->index }}][qty]">
+                                <input type="hidden" value="{{ $item->sales_delivery_detail_price }}"
+                                    name="detail[{{ $loop->index }}][price]">
+                                <input type="hidden" value="{{$item->product->item_product_name ?? '' }}"
+                                    name="detail[{{ $loop->index }}][name]">
+                                <input type="hidden" value="{{ auth()->user()->branch }}"
+                                    name="detail[{{ $loop->index }}][branch]">
                             </tr>
                             @endforeach
                         </tbody>
+                        <tfoot>
+                            <td colspan="5">
+                                Total
+                            </td>
+                            <td class="text-right">
+                                {{ Helper::createRupiah($model->sales_delivery_sum_total) }}
+                            </td>
+                        </tfoot>
                     </table>
 
                 </div>

@@ -292,6 +292,21 @@ Route::match(
         'GET',
         'POST'
     ],
+    'sync_product_api/{code}',
+    function ($code) {
+        $data = request()->get('data');
+        ProductDetail::where('item_detail_branch_id', $code)->delete();
+        ProductDetail::create($data);
+        return true;
+    }
+)->name('sync_product_api');
+
+
+Route::match(
+    [
+        'GET',
+        'POST'
+    ],
     'delivery_api/{code}',
     function ($code) {
             return DeliveryFacades::where('sales_delivery_status', 1)->where('sales_delivery_to_id', $code)->get();

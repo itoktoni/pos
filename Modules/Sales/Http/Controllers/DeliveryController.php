@@ -12,6 +12,7 @@ use Modules\Crm\Dao\Repositories\CustomerRepository;
 use Modules\Finance\Dao\Repositories\PaymentRepository;
 use Modules\Finance\Dao\Repositories\TaxRepository;
 use Modules\Finance\Dao\Repositories\TopRepository;
+use Modules\Item\Dao\Facades\ProductFacades;
 use Modules\Item\Dao\Models\ProductDetail;
 use Modules\Item\Dao\Repositories\ProductRepository;
 use Modules\Marketing\Dao\Repositories\PromoRepository;
@@ -173,12 +174,26 @@ class DeliveryController extends Controller
                 $branch = auth()->user()->branch;
                 $code = request()->get('code');
                 foreach ($request->detail as $detail) {
+
+                    $check_product = ProductFacades::find($detail['id']);
+                    if(!$check_product){
+
+                        ProductFacades::create([
+                            'item_product_sell' => $detail['price'],
+                            'item_product_name' => $detail['name'],
+                            'item_product_item_category_id' => $detail['category'],
+                        ]);
+                    }
+
                     $check = ProductDetail::where('item_detail_branch_id', $detail['branch'])->where('item_detail_product_id', $detail['id'])->first();
                     if ($check) {
+
                         $qty = $check->item_detail_stock_qty;
                         $check->item_detail_stock_qty = $qty + $detail['qty'];
                         $check->save();
+
                     } else {
+
                         ProductDetail::create([
                             'item_detail_stock_qty' => $detail['qty'],
                             'item_detail_branch_id' => $detail['branch'],
@@ -232,7 +247,58 @@ class DeliveryController extends Controller
         ]);
     }
 
-    public function transfer(MasterService $service)
+    public function transfer()
+    {
+        if (request()->isMethod('POST')) {
+
+            $branch = auth()->user()->branch;
+            $curl = Curl::to(config('website.sync').'api/delivery_api/'.$branch)->get();
+            $data = json_decode($curl);
+            return DataTables::of($data)
+                ->addColumn('checkbox', function ($model) {
+                    return '<input type="checkbox" name="id[]" value="{{ $model->sales_delivery_id }}">';
+                })
+                ->addColumn('action', function ($model) {
+                    return '<div class="action text-center"><a href="' . route('sync_order_sync') . '?code=' . $model->sales_delivery_id . '" class="btn btn-warning btn-xs">Sync</a></div>';
+                })
+                ->make(true);
+        }
+
+        return view(Helper::setViewData())->with([
+            'fields' => [
+                'sales_delivery_id' => 'Delivery Code',
+                'sales_delivery_date' => 'Delivery Date',
+                'sales_delivery_notes_internal' => 'Notes',
+                'sales_delivery_sum_total' => 'Total',
+            ],
+            'template' => $this->template,
+        ]);
+    }
+
+    public function product()
+    {
+        if (request()->isMethod('POST')) {
+
+            $branch = auth()->user()->branch;
+            $product_detail = ProductDetail::all();
+            $curl = Curl::to(config('website.sync').'api/sync_product_api/'.$branch)->withData([
+                'data' => $product_detail->toArray()
+            ])->post();
+
+            Alert::update('Success Syncronize');
+        }
+
+        $product = ProductFacades::with(['detail' => function($query){
+            $query->where('item_detail_branch_id','=', auth()->user()->branch);
+        }])->get();
+
+        return view(Helper::setViewForm($this->template, 'product', $this->folder))->with([
+            'product' => $product,
+            'template' => $this->template,
+        ]);
+    }
+
+    public function transaction()
     {
         if (request()->isMethod('POST')) {
 
