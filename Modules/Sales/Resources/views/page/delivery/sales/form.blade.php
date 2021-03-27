@@ -2,7 +2,7 @@
 
     {!! Form::label('name', 'Vendor', ['class' => 'col-md-2 control-label']) !!}
     <div class="col-md-4 {{ $errors->has('sales_delivery_to_id') ? 'has-error' : ''}}">
-        {{ Form::select('sales_delivery_to_id', $customers, null, ['class'=> 'form-control', 'id' => 'to_id']) }}
+        {{ Form::select('sales_delivery_to_id', $branch, null, ['class'=> 'form-control', 'id' => 'to_id']) }}
         {!! $errors->first('sales_delivery_to_id', '<p class="help-block">:message</p>') !!}
     </div>
 

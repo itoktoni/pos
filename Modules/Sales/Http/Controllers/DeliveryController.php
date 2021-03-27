@@ -2,6 +2,7 @@
 
 namespace Modules\Sales\Http\Controllers;
 
+use App\Dao\Repositories\BranchRepository;
 use App\Dao\Repositories\CompanyRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Services\MasterService;
@@ -55,8 +56,7 @@ class DeliveryController extends Controller
         $product = Helper::shareOption((new ProductRepository()));
         $tax = Helper::shareOption((new TaxRepository()));
         $promo = Helper::shareOption((new PromoRepository()));
-        $company = Helper::shareOption((new CompanyRepository()));
-        $customers = Helper::shareOption((new CustomerRepository()));
+        $branch = Helper::shareOption((new BranchRepository()));
         $status = Helper::shareStatus(self::$model->status);
 
         $from = $to = ['Please Choose Area'];
@@ -71,8 +71,7 @@ class DeliveryController extends Controller
             'promo' => $promo,
             'from' => $from,
             'to' => $to,
-            'company' => $company,
-            'customers' => $customers,
+            'branch' => $branch,
         ];
 
         return array_merge($view, $data);
