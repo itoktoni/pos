@@ -224,8 +224,8 @@ class ProductController extends Controller
     {
         if (request()->isMethod('POST')) {
             $datatable = $service->setRaw(['item_product_image'])->datatable(self::$model);
-            $datatable->editColumn('item_product_buy', function ($select) {
-                return number_format($select->item_product_buy);
+            $datatable->editColumn('item_detail_stock_qty', function ($select) {
+                return number_format($select->detail->sum('item_detail_stock_qty'));
             });
             $datatable->editColumn('item_product_sell', function ($select) {
                 return number_format($select->item_product_sell);

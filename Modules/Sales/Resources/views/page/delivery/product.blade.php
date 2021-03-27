@@ -44,7 +44,7 @@
             <div class="navbar-fixed-bottom" id="menu_action">
                 <div class="text-right" style="padding:5px">
                     <a id="linkMenu" href="{!! route($module.'_data') !!}" class="btn btn-warning">Back</a>
-                    <button type="submit" class="btn btn-primary">Sync</button>
+                    <button onclick="return confirm('Are you sure to sync data ?');"  type="submit" class="btn btn-primary">Sync</button>
                 </div>
             </div>
 
