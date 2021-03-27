@@ -60,6 +60,12 @@ class ModuleServiceProvider extends ServiceProvider
         $this->app->bind('quotation_detail_facades', function () {
             return new \Modules\Sales\Dao\Repositories\QuotationDetailRepository();
         });
+        $this->app->bind('purchase_facades', function () {
+            return new \Modules\Sales\Dao\Repositories\PurchaseRepository();
+        });
+        $this->app->bind('purchase_detail_facades', function () {
+            return new \Modules\Sales\Dao\Repositories\PurchaseDetailRepository();
+        });
 
     }
 

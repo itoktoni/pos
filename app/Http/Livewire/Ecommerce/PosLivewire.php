@@ -4,8 +4,10 @@ namespace App\Http\Livewire\Ecommerce;
 
 use App\Dao\Facades\BranchFacades;
 use charlieuki\ReceiptPrinter\ReceiptPrinter as ReceiptPrinter;
+use Chrome;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use Livewire\WithPagination;
@@ -16,6 +18,8 @@ use Modules\Rajaongkir\Dao\Repositories\ProvinceRepository;
 use Modules\Sales\Dao\Facades\OrderDetailFacades;
 use Modules\Sales\Dao\Facades\OrderFacades;
 use Plugin\Helper;
+use Ixudra\Curl\Facades\Curl;
+
 
 class PosLivewire extends Component
 {
@@ -49,7 +53,7 @@ class PosLivewire extends Component
         '10000.jpg' => '10000',
         '20000.jpg' => '20000',
         '50000.jpg' => '50000',
-        '75000.jpg' => '75000',
+        // '75000.jpg' => '75000',
         '100000.jpg' => '100000',
     ];
 
@@ -189,6 +193,7 @@ class PosLivewire extends Component
             Cart::clear();
             Cart::clearCartConditions();
         }
+
         $this->search = null;
         $this->murah = null;
         $this->resetPage();
@@ -204,10 +209,15 @@ class PosLivewire extends Component
                 'quantity' => +1, // so if the current product has a quantity of 4, another 2 will be added so this will result to 6
             ));
         } else {
-            Cart::add($id, $product->item_product_name, $product->item_product_price, 1, $product->toArray());
+            Cart::add($id, $product->item_product_name, $product->item_product_sell, 1, $product->toArray());
         }
 
         $this->emit('updateProduct');
+    }
+
+    public function actionLogout(){
+
+        return redirect()->route('logout');
     }
 
     public function createOrder()
@@ -402,5 +412,40 @@ class PosLivewire extends Component
         // Print receipt
         $printer->printAntrian();
         // $printer->printLogo();
+    }
+
+    public function actionSync(){
+
+        return redirect()->route('home');
+        $local_product = ProductFacades::with('detail')->get();
+
+        $test_product = Curl::to('https://localhost/kasir/api/stock_api')->withData([
+            'branch' => auth()->user()->branch,
+            'username' => auth()->user()->username
+        ])->post();
+        $data_product = json_decode($test_product);
+
+        foreach($data_product as $item){
+            $get = $local_product->where('item_product_id', $item->item_product_id)->first();
+
+            if($get){
+                $detail = $get->detail;
+                foreach($detail as $det){
+
+
+                }
+            }
+            else{
+                $parse_product = $item;
+                ProductFacades::create([
+                    'item_product_id' => $parse_product->item_product_id,
+                    'item_product_min_stock' => $parse_product->item_product_min_stock,
+                    'item_product_price' => $parse_product->item_product_price,
+                    'item_product_item_category_id' => $parse_product->item_product_item_category_id,
+                    'item_product_name' => $parse_product->item_product_name,
+                ]);
+            }
+        }
+        
     }
 }

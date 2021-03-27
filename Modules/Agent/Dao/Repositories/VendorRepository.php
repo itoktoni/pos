@@ -6,6 +6,7 @@ use Plugin\Notes;
 use Plugin\Helper;
 use Modules\Agent\Dao\Models\Vendor;
 use App\Dao\Interfaces\MasterInterface;
+use Illuminate\Database\QueryException;
 
 class VendorRepository extends Vendor implements MasterInterface
 {
@@ -30,7 +31,7 @@ class VendorRepository extends Vendor implements MasterInterface
         try {
             $activity = $this->findOrFail($id)->update($request);
             return Notes::update($activity);
-        } catch (QueryExceptionAlias $ex) {
+        } catch (QueryException $ex) {
             return Notes::error($ex->getMessage());
         }
     }
@@ -46,7 +47,7 @@ class VendorRepository extends Vendor implements MasterInterface
     }
 
 
-    public function showRepository($id, $relation)
+    public function showRepository($id, $relation =null)
     {
         if ($relation) {
             return $this->with($relation)->findOrFail($id);

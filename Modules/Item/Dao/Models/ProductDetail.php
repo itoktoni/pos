@@ -16,6 +16,7 @@ class ProductDetail extends Model
         'item_detail_stock_enable',
         'item_detail_stock_qty',
         'item_detail_branch_id',
+        'item_detail_product_id',
     ];
 
     public $timestamps = false;

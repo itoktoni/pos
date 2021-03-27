@@ -18,7 +18,9 @@ class DeliveryRepository extends Delivery implements MasterInterface
     public function dataRepository()
     {
         $list = Helper::dataColumn($this->datatable, $this->getKeyName());
-        return $this->select($list);
+        return $this->select($list)
+        ->leftJoin(CustomerFacades::getTable(),CustomerFacades::getKeyName(),'sales_delivery_to_id')
+        ->leftJoin(CompanyFacades::getTable(),CompanyFacades::getKeyName(),'sales_delivery_from_id');
     }
 
     public function userRepository($id)

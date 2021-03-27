@@ -16,11 +16,21 @@ class TeamUpdateRequest extends FormRequest
     {
         if (request()->isMethod('POST')) {
             return [
-                'username'  => 'required',
-                'email'      => 'required|email',
+                'username' => 'required',
+                'email' => 'required|email',
                 'group_user' => 'required',
             ];
         }
         return [];
+    }
+
+    public function prepareForValidation()
+    {
+        if ($this->active) {
+
+            $this->merge([
+                'email_verified_at' => date('Y-m-d H:i:s'),
+            ]);
+        }
     }
 }

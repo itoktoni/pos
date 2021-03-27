@@ -20,9 +20,9 @@
             <nav id="menu" class="nav-main" role="navigation">
                 <ul id="left" class="nav nav-main">
                     <li>
-                        <a onclick="location.href = '{{ route('home') }}' id="linkMenu" href="{{ route('home') }}">
-                            <i class="fa fa-home" aria-hidden="true" style="font-size: 23px;margin-left:-2px;margin-right:5px"></i>
-                            <span>Home</span>
+                        <a onclick="location.href = '{{ url("/") }}' id="linkMenu" href="{{ url('/') }}">
+                            <i class="fa fa-shopping-cart" aria-hidden="true" style="font-size: 23px;margin-left:-2px;margin-right:5px"></i>
+                            <span>POS</span>
                         </a>
                     </li>
                     @if(isset($menu_list))

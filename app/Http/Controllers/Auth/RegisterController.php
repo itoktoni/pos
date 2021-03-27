@@ -64,14 +64,14 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
-        return User::create([
-            'active'    => '1',
-            'group_user'    => 'customer',
-            'username'  => $data['username'],
-            'name'      => $data['name'],
-            'email'     => $data['email'],
-            'password'  => bcrypt($data['password']),
-            'api_token'  => base64_encode($data['email'] . ':' . $data['password']),
-        ]);
+        // return User::create([
+        //     'active'    => '1',
+        //     'group_user'    => 'customer',
+        //     'username'  => $data['username'],
+        //     'name'      => $data['name'],
+        //     'email'     => $data['email'],
+        //     'password'  => bcrypt($data['password']),
+        //     'api_token'  => base64_encode($data['email'] . ':' . $data['password']),
+        // ]);
     }
 }

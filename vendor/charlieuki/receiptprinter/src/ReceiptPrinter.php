@@ -48,6 +48,9 @@ class ReceiptPrinter
             case 'network':
                 $connector = new NetworkPrintConnector($connector_descriptor);
                 break;
+            case 'linux':
+                    $connector = new FilePrintConnector($connector_descriptor);
+                    break;    
             default:
                 $connector = new FilePrintConnector("php://stdout");
                 break;

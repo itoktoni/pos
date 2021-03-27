@@ -212,27 +212,32 @@ class ProductController extends Controller
     {
         $service->delete(self::$model);
         return Response::redirectBack();
+    }
 
+    public function sync(MasterService $service)
+    {
+        $service->delete(self::$model);
+        return Response::redirectBack();
     }
 
     public function data(MasterService $service)
     {
         if (request()->isMethod('POST')) {
             $datatable = $service->setRaw(['item_product_image'])->datatable(self::$model);
+            $datatable->editColumn('item_product_buy', function ($select) {
+                return number_format($select->item_product_buy);
+            });
             $datatable->editColumn('item_product_sell', function ($select) {
                 return number_format($select->item_product_sell);
             });
             $datatable->editColumn('item_product_image', function ($select) {
                 return Helper::createImage(Helper::getTemplate(__CLASS__) . '/thumbnail_' . $select->item_product_image);
             });
-            $datatable->editColumn('item_product_stock', function ($select) {
-                return $select->detail->sum('item_detail_stock_qty');
-            });
             $datatable->addColumn('action', Helper::setViewAction($this->template, $this->folder));
             return $datatable->make(true);
         }
 
-        return view(Helper::setViewData())->with([
+        return view(Helper::setViewData($this->template, $this->folder))->with([
             'fields' => Helper::listData(self::$model->datatable),
             'template' => $this->template,
         ]);

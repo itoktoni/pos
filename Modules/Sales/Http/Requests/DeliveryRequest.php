@@ -3,15 +3,14 @@
 namespace Modules\Sales\Http\Requests;
 
 use Plugin\Helper;
-use Modules\Sales\Dao\Models\Order;
+use Modules\Sales\Dao\Models\Delivery;
 use Nwidart\Modules\Facades\Module;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\ValidationException;
-use Modules\Sales\Dao\Repositories\OrderRepository;
-use Modules\Item\Dao\Repositories\ProductRepository;
-use Modules\Sales\Dao\Models\OrderDetail;
 use Modules\Sales\Dao\Repositories\DeliveryRepository;
+use Modules\Item\Dao\Repositories\ProductRepository;
+use Modules\Sales\Dao\Models\DeliveryDetail;
 
 class DeliveryRequest extends FormRequest
 {
@@ -31,39 +30,38 @@ class DeliveryRequest extends FormRequest
     public function prepareForValidation()
     {
         $autonumber = Helper::autoNumber(self::$model->getTable(), self::$model->getKeyName(), 'DO' . date('Ym'), config('website.autonumber'));
-        if (!empty($this->code) && config('module') == 'sales_delivery') {
+        if (!empty($this->code)) {
             $autonumber = $this->code;
         }
-
-        if ($this->sales_delivery_sales_order_id) {
-            $this->code = $this->sales_delivery_sales_order_id;
-        }
-
+        
         $map = collect($this->detail)->map(function ($item) use ($autonumber) {
             $product = new ProductRepository();
-            $data['sales_delivery_detail_delivery_id'] = $autonumber;
-            $data['sales_delivery_detail_order_id'] = $this->code;
+            $data_product = $product->showRepository($item['temp_id'])->first();
+            $total = $item['temp_qty'] * Helper::filterInput($item['temp_price']) ?? 0;
+            // $discount = Helper::filterInput($item['temp_disc']) ?? 0;
+            // $discount_total = $discount * $total / 100;
+            $data['sales_delivery_detail_order_id'] = $autonumber;
             $data['sales_delivery_detail_item_product_id'] = $item['temp_id'];
-            
-            $total = Helper::filterInput($item['temp_out']) * Helper::filterInput($item['temp_price']) ?? 0;
-            $discount = Helper::filterInput($item['temp_dpercent']) ?? 0;
-            $discount_total = $discount * $total / 100;
-
-            $data['sales_delivery_detail_item_product_description'] = Helper::filterInput($item['temp_desc']);
+            $data['sales_delivery_detail_item_product_description'] = $item['temp_notes'] ?? '';
+            $data['sales_delivery_detail_item_product_price'] = $data_product->item_product_sell ?? '';
+            $data['sales_delivery_detail_item_product_weight'] = $data_product->item_product_weight ?? '';
             $data['sales_delivery_detail_qty'] = Helper::filterInput($item['temp_qty']);
-            $data['sales_delivery_detail_out'] = Helper::filterInput($item['temp_out']);
-            $data['sales_delivery_detail_notes'] = Helper::filterInput($item['temp_notes']);
-            $data['sales_delivery_detail_price'] = Helper::filterInput($item['temp_price']);
-            $data['sales_delivery_detail_total'] = $total - $discount_total;
-            $data['sales_delivery_detail_discount_name'] = Helper::filterInput($item['temp_dname']);
-            $data['sales_delivery_detail_discount_percent'] = Helper::filterInput($item['temp_dpercent']);
-            $data['sales_delivery_detail_discount_value'] = $discount_total;
+            $data['sales_delivery_detail_price'] = Helper::filterInput($item['temp_price']) ?? 0;
+            $data['sales_delivery_detail_total'] = $total;
+            // $data['sales_delivery_detail_discount_name'] = $item['temp_desc'];
+            // $data['sales_delivery_detail_discount_percent'] = Helper::filterInput($item['temp_disc']) ?? 0;
+            $data['sales_delivery_detail_discount_value'] = $discount_total ?? 0;
             return $data;
         });
 
         $this->merge([
             'sales_delivery_id' => $autonumber,
-            'sales_delivery_sales_order_id' => $this->code,
+            'sales_delivery_discount_value' => Helper::filterInput($this->sales_delivery_discount_value) ?? 0,
+            // 'sales_delivery_tax_value' => Helper::filterInput($this->sales_delivery_tax_value) ?? 0,
+            'sales_delivery_sum_product' => Helper::filterInput($this->sales_delivery_sum_product) ?? 0,
+            'sales_delivery_sum_discount' => Helper::filterInput($this->sales_delivery_sum_discount) ?? 0,
+            // 'sales_delivery_sum_tax' => Helper::filterInput($this->sales_delivery_sum_tax) ?? 0,
+            'sales_delivery_sum_total' => Helper::filterInput($this->sales_delivery_sum_total) ?? 0,
             'detail' => array_values($map->toArray()),
             ]);
     }
@@ -72,10 +70,7 @@ class DeliveryRequest extends FormRequest
     {
         if (request()->isMethod('POST')) {
             return [
-                'sales_delivery_from_id' => 'required',
-                'sales_delivery_from_name' => 'required',
                 'sales_delivery_to_id' => 'required',
-                'sales_delivery_to_name' => 'required',
                 'detail' => 'required',
             ];
         }
@@ -85,7 +80,7 @@ class DeliveryRequest extends FormRequest
     public function attributes()
     {
         return [
-            'sales_delivery_from_id' => 'Company',
+            'sales_delivery_to_id' => 'Company',
         ];
     }
 

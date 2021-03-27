@@ -71,8 +71,9 @@ class Product extends Model
     public $incrementing = false;
     public $keyType = 'string';
     public $rules = [
-        'item_product_name' => 'required|min:3',
-        'item_product_price' => 'required',
+        'item_product_name' => 'required|min:3|unique:item_product',
+        'item_product_buy' => 'required',
+        'item_product_sell' => 'required',
     ];
 
     // public $with = ['category', 'brand', 'detail'];
@@ -93,9 +94,10 @@ class Product extends Model
         'item_category_description' => [false => 'Category'],
         'item_category_image' => [false => 'Category'],
         'item_product_min_order' => [false => 'Min Order'],
-        'item_product_min_stock' => [true => 'Min Stock'],
+        'item_product_min_stock' => [false => 'Min Stock'],
         'item_product_stroke' => [false => 'Buy'],
-        'item_product_price' => [true => 'Price'],
+        'item_product_buy' => [false => 'Buy'],
+        'item_product_sell' => [true => 'Harga'],
         'item_product_weight' => [false => 'Gram'],
         'item_product_stock' => [true => 'Stock'],
         'item_product_image' => [false => 'Images'],
@@ -147,7 +149,10 @@ class Product extends Model
         parent::boot();
         $statis = 'data';
         parent::creating(function ($model) {
-            $model->item_product_id = Helper::autoNumber($model->getTable(), 'item_product_id', 'P' . date('ymd'), 15);
+            if(empty($model->item_product_id)){
+
+                $model->item_product_id = Helper::autoNumber($model->getTable(), 'item_product_id', 'P' . date('ymd'), config('website.autonumbers'));
+            }
             // $model->item_product_code = Helper::autoNumber($model->getTable(), 'item_product_id', date('m'), 4);
             
             // if($model->item_product_is_variant == 0){
@@ -193,7 +198,7 @@ class Product extends Model
             }
 
             if ($model->item_product_name && empty($model->item_product_slug)) {
-                $model->item_product_slug = Str::slug($model->item_product_name.'-'.rand(10,1000));
+                $model->item_product_slug = Str::slug($model->item_product_name);
             } else {
                 $model->item_product_slug = Str::slug($model->item_product_slug.'-'.rand(10,1000));
             }

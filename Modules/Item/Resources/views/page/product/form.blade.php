@@ -18,16 +18,16 @@
 </div>
 
 <div class="form-group">
-    {!! Form::label('name', 'Default Price', ['class' => 'col-md-2 control-label']) !!}
-    <div class="col-md-4 {{ $errors->has($form.'price') ? 'has-error' : ''}}">
-        {!! Form::number($form.'price', null, ['class' => 'form-control']) !!}
-        {!! $errors->first($form.'price', '<p class="help-block">:message</p>') !!}
+    {!! Form::label('name', 'Buying Price', ['class' => 'col-md-2 control-label']) !!}
+    <div class="col-md-4 {{ $errors->has($form.'buy') ? 'has-error' : ''}}">
+        {!! Form::number($form.'buy', null, ['class' => 'form-control']) !!}
+        {!! $errors->first($form.'buy', '<p class="help-block">:message</p>') !!}
     </div>
 
-    {!! Form::label('name', 'Minimum Stock', ['class' => 'col-md-2 control-label']) !!}
-    <div class="col-md-4 {{ $errors->has($form.'min_stock') ? 'has-error' : ''}}">
-        {!! Form::number($form.'min_stock', null, ['class' => 'form-control']) !!}
-        {!! $errors->first($form.'min_stock', '<p class="help-block">:message</p>') !!}
+    {!! Form::label('name', 'Selling Price', ['class' => 'col-md-2 control-label']) !!}
+    <div class="col-md-4 {{ $errors->has($form.'sell') ? 'has-error' : ''}}">
+        {!! Form::number($form.'sell', null, ['class' => 'form-control']) !!}
+        {!! $errors->first($form.'sell', '<p class="help-block">:message</p>') !!}
     </div>
 
 

@@ -62,14 +62,14 @@ class CheckStock extends Command
         foreach ($data_product as $product) {
             if($product->item_product_min_stock >= $product->item_detail_stock_qty){
 
-                $message = $message . "*Product : " . $product->item_product_name . "* \n \n";
-                $message = $message . "*Branch : " . $product->branch_name . "* \n \n";
+                $message = $message . "*Product : " . $product->item_product_name . "* \n";
+                $message = $message . "*Branch " . $product->branch_name . "* \n";
                 $message = $message . "Stock : $product->item_detail_stock_qty \n";
-                $message = $message . "Min Stock : $product->item_product_min_stock \n";
+                $message = $message . "Min Stock : $product->item_product_min_stock \n \n";
             }
         }
         Whatsapp::send(config('website.phone'), $message);
-        Log::info($message);
+        // Log::info($message);
         $this->info('The system stock has been checked !');
 
     }

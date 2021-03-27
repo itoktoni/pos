@@ -1,5 +1,13 @@
 @push('css')
-
+<style>
+.action{
+    color: #fff;
+    font-weight: bold;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    cursor: pointer;
+}
+</style>
 @endpush
 
 <div class="container-fluid">
@@ -152,30 +160,44 @@
             <div class="col-xl-5 col-lg-4 col-md-4 col-sm-12">
                 <div class="row mt-1">
                     @foreach($data_uang as $key => $value)
-                    <div class="col-xl-2 col-lg-4 col-md-4 col-sm-2 mb-2" wire:click="actionBayar('{{ $value }}')">
+                    <div class="col-xl-3 col-lg-4 col-md-4 col-sm-2 mb-2" wire:click="actionBayar('{{ $value }}')">
                         <img class="img-fluid" src="{{ Helper::files('uang/'.$key) }}" alt="">
                     </div>
                     @endforeach
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-3 col-sm-12 mt-1">
+            <div class="col-lg-3 col-md-3 col-sm-12 mt-1 mb-2">
                 <div class="row">
-                    <div class="col-md-6">
-                        <button class="btn btn-success btn-block mb-2" wire:click="actionReset()">Baru</button>
+                    <div class="container action">
+                        <div class="row  align-items-center mb-2">
+                            <div class="col-sm mr-2 pt-3 pb-3 text-center" wire:click="actionReset()"  style="background-color: #c0c0c0;color:black">
+                                Refresh
+                            </div>
+                            <div class="col-sm pt-3 pb-3  text-center" wire:click="resetBayar()"  style="background-color: #DC3545;">
+                                Reset
+                            </div>
+                            <div class="col-sm pt-3 pb-3 ml-2 text-center"  wire:click="printAntrian()" style="background-color: #427BFF;">
+                                Antrian
+                            </div>
+                        </div>
+
+                        <div class="row align-items-center">
+                            <div class="col-sm pt-3 pb-3 mr-2 text-center"  wire:click="actionSync()" style="background-color: #F2C010;color:black">
+                               Sync
+                            </div>
+                            <div class="col-sm pt-3 pb-3 text-center" wire:click="actionLogout()" style="background-color: black;">
+                                Logout
+                            </div>
+                            <div wire:click="createOrder()" class="col-sm pt-3 pb-3 ml-2 text-center" style="background-color: #4FA746;">
+                               Selesai
+                            </div>
+                        </div>
+
                     </div>
-                    <div class="col-md-6">
-                        <button class="btn btn-danger btn-block" wire:click="resetBayar()">Reset</button>
-                    </div>
+                    
                 </div>
-                <div class="row">
-                    <div class="col-md-6">
-                        <button style="height: 120%" class="btn btn-primary btn-block mb-2" wire:click="printAntrian()">Antrian</button>
-                    </div>
-                    <div class="col-md-6">
-                        <button style="height: 120%" class="btn btn-dark btn-block" wire:click="createOrder()">Cetak</button>
-                    </div>
-                </div>
+                
             </div>
         </div>
 

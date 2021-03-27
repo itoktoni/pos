@@ -23,11 +23,16 @@ use michaelFrank\dynamicphoto\config\CkeditorUploud;
 use Modules\Crm\Dao\Facades\CustomerFacades;
 use Modules\Crm\Dao\Repositories\CustomerRepository;
 use Modules\Finance\Dao\Repositories\TaxRepository;
+use Modules\Item\Dao\Facades\ProductFacades;
+use Modules\Item\Dao\Models\ProductDetail;
 use Modules\Item\Dao\Repositories\ProductRepository;
 use Modules\Item\Dao\Repositories\VariantRepository;
 use Modules\Marketing\Dao\Repositories\PromoRepository;
 use Modules\Rajaongkir\Dao\Facades\AreaFacades;
 use Modules\Rajaongkir\Dao\Repositories\PriceRepository;
+use Modules\Sales\Dao\Facades\DeliveryFacades;
+use Modules\Sales\Dao\Models\Delivery;
+use Modules\Sales\Dao\Repositories\DeliveryRepository;
 
 // use Helper;
 // use Curl;
@@ -255,13 +260,13 @@ Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:api');
 
-Route::post('/stock', 'PublicController@stock')->name('stock');
-Route::post('team_testing', 'TeamController@data')->middleware('jwt');
-Route::post('team_testing2', 'TeamController@data')->middleware('auth:airlock');
+// Route::post('/stock', 'PublicController@stock')->name('stock');
+// Route::post('team_testing', 'TeamController@data')->middleware('jwt');
+// Route::post('team_testing2', 'TeamController@data')->middleware('auth:airlock');
 
-Route::post('register_api', 'APIController@register');
-Route::post('login_api', 'APIController@login');
-Route::post('air_login', 'APIController@airLogin');
+// Route::post('register_api', 'APIController@register');
+// Route::post('login_api', 'APIController@login');
+// Route::post('air_login', 'APIController@airLogin');
 
 Route::match(
     [
@@ -280,6 +285,86 @@ Route::match(
         return $query;
     }
 )->name('product_api');
+
+
+Route::match(
+    [
+        'GET',
+        'POST'
+    ],
+    'delivery_api',
+    function () {
+
+        $query = new DeliveryRepository();
+        return $query->where('sales_delivery_status', 1)->get();
+    }
+)->name('delivery_api');
+
+
+Route::match(['GET','POST'],'delivery_get_api/{code}',
+    function ($code) {
+
+        $query = new DeliveryRepository();
+        if(!empty($code)){
+            return $query->with('detail')->find($code);
+        }
+        return $query->get();
+    }
+)->name('delivery_get_api');
+
+
+Route::match(['GET','POST'],'sync_stock/{code}',
+    function ($code) {
+        $data = request()->get('data');
+        $branch = request()->get('branch');
+
+        $code = request()->get('code');
+        $date = request()->get('date');
+
+        try {
+            
+            // DB::beginTransaction();
+            Delivery::find($code)->update([
+                'sales_delivery_status' => 2,
+                'sales_delivery_date_sync' => $date
+            ]);
+    
+            ProductDetail::where('item_detail_branch_id', $branch)->delete();
+            ProductDetail::create($data);
+
+            // DB::commit();
+
+            return ['status' => 1];
+
+        } catch (\Throwable $th) {
+            return ['status' => 0];
+            // DB::rollBack();
+        }
+
+        
+    }
+)->name('sync_stock');
+
+
+Route::match(
+    [
+        'GET',
+        'POST'
+    ],
+    'stock_api',
+    function () {
+        $data = request()->all();
+        $username = $data['username'];
+        $branch = $data['branch'];
+
+        if(DB::table('users')->where('username', $username)->count() > 0){
+
+            return ProductDetail::where('item_detail_branch_slug', $branch)->get()->mapToGroups(function($model){
+                return [$model->item_detail_product_id => $model];
+            });
+        }
+    }
+)->name('stock_api');
 
 Route::match(
     [

@@ -9,12 +9,12 @@ use Modules\Rajaongkir\Dao\Models\Area;
 class DeliveryDetail extends Model
 {
   protected $table = 'sales_delivery_detail';
-  protected $primaryKey = 'sales_delivery_detail_delivery_id';
+  protected $primaryKey = 'sales_delivery_detail_order_id';
   protected $foreignKey = 'sales_delivery_detail_item_product_id';
   protected $with = ['product'];
   protected $fillable = [
     'sales_delivery_detail_order_id',
-    'sales_delivery_detail_delivery_id',
+    'sales_delivery_detail_order_id',
     'sales_delivery_detail_notes',
     'sales_delivery_detail_item_product_id',
     'sales_delivery_detail_item_product_description',

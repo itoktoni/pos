@@ -10,16 +10,17 @@ return [
     | Valid values are: cups, network, windows
     |
     */
-    'connector_type' => 'windows',
+    'connector_type' => env('PRINTER_TYPE'),
     /*
     |--------------------------------------------------------------------------
     | Printer connector descriptor
     |--------------------------------------------------------------------------
     |
     | Typically printer name or IP address.
+    | on linux /dev/usb/lp1   or windows POS58  
     |
     */
-    'connector_descriptor' => 'POS58',
+    'connector_descriptor' => env('PRINTER_NAME'),
     /*
     |--------------------------------------------------------------------------
     | Printer port

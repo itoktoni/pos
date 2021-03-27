@@ -197,7 +197,7 @@ return [
         App\Providers\BroadcastServiceProvider::class,
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
-        Thedevsaddam\LaravelSchema\LaravelSchemaServiceProvider::class,
+        // Thedevsaddam\LaravelSchema\LaravelSchemaServiceProvider::class,
         Jackiedo\DotenvEditor\DotenvEditorServiceProvider::class,
         HobbIoT\Auth\CacheableAuthUserServiceProvider::class,
         Intervention\Image\ImageServiceProvider::class,

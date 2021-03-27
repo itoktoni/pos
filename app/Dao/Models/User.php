@@ -82,7 +82,7 @@ class User extends Authenticatable implements MustVerifyEmail
     public $datatable = [
         'id'            => [false => 'ID User'],
         'username'      => [true => 'Username'],
-        'address'      => [true => 'Username'],
+        'address'      => [false => 'Username'],
         'name'          => [true => 'Name'],
         'email'         => [false => 'Email'],
         'phone'         => [false => 'Email'],

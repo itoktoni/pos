@@ -30,7 +30,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => 'ab4b77e42f76c77356cacfa3f67a4d5ab295f678',
+    'reference' => '2e3a34dbaf5b865ad718673f87b40cdaeda3d298',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -303,12 +303,12 @@ private static $installed = array (
     ),
     'filp/whoops' => 
     array (
-      'pretty_version' => '2.10.0',
-      'version' => '2.10.0.0',
+      'pretty_version' => '2.11.0',
+      'version' => '2.11.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => '6ecda5217bf048088b891f7403b262906be5a957',
+      'reference' => 'f6e14679f948d8a5cfb866fa7065a30c66bd64d3',
     ),
     'fzaninotto/faker' => 
     array (
@@ -318,6 +318,24 @@ private static $installed = array (
       array (
       ),
       'reference' => '848d8125239d7dbf8ab25cb7f054f1a630e68c2e',
+    ),
+    'guzzlehttp/guzzle' => 
+    array (
+      'pretty_version' => '7.2.0',
+      'version' => '7.2.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '0aa74dfb41ae110835923ef10a9d803a22d50e79',
+    ),
+    'guzzlehttp/promises' => 
+    array (
+      'pretty_version' => '1.4.1',
+      'version' => '1.4.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '8e7d04f1f6450fef59366c399cfad4b9383aa30d',
     ),
     'guzzlehttp/psr7' => 
     array (
@@ -626,7 +644,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => 'ab4b77e42f76c77356cacfa3f67a4d5ab295f678',
+      'reference' => '2e3a34dbaf5b865ad718673f87b40cdaeda3d298',
     ),
     'laravel/sanctum' => 
     array (
@@ -1693,12 +1711,12 @@ private static $installed = array (
     ),
     'yajra/laravel-datatables-oracle' => 
     array (
-      'pretty_version' => 'v9.15.2',
-      'version' => '9.15.2.0',
+      'pretty_version' => 'v9.17.0',
+      'version' => '9.17.0.0',
       'aliases' => 
       array (
       ),
-      'reference' => 'e0b416d8b7d4472b16217c40e74284074cc34dde',
+      'reference' => '4779bcbb13d1ecad3cd2190999e19cb74798dbdd',
     ),
   ),
 );
