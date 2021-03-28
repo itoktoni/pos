@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
 use Livewire\Component;
 use Livewire\WithPagination;
+use Modules\Item\Dao\Facades\CategoryFacades;
 use Modules\Item\Dao\Facades\ProductFacades;
 use Modules\Item\Dao\Models\ProductDetail;
 use Modules\Item\Dao\Repositories\CategoryRepository;
@@ -123,39 +124,39 @@ class PosLivewire extends Component
     public function updateProduct()
     {
         $detail = new ProductDetail();
-        $query = ProductFacades::leftJoin($detail->getTable(), 'item_detail_product_id', ProductFacades::getKeyName())->where('item_detail_branch_id', auth()->user()->branch);
+        $query = ProductFacades::leftJoin($detail->getTable(), 'item_product_id', 'item_detail_product_id')->leftJoin(CategoryFacades::getTable(),CategoryFacades::getKeyName(), 'item_product_item_category_id')->where('item_detail_branch_id', auth()->user()->branch);
 
-        if (!empty($this->search)) {
-            $query->where('item_product_name', 'like', "%$this->search%");
-        }
+        // if (!empty($this->search)) {
+        //     $query->where('item_product_name', 'like', "%$this->search%");
+        // }
 
         if (!empty($this->murah)) {
             $query->where('item_category_slug', $this->murah);
         }
 
-        $query->groupBy('item_product_id');
+        $query->groupBy('item_detail_product_id');
 
-        if (!empty($this->sort)) {
-            if ($this->sort == 'popular') {
+        // if (!empty($this->sort)) {
+        //     if ($this->sort == 'popular') {
 
-                $query->orderByDesc('item_product_counter');
-            } else if ($this->sort == 'seller') {
+        //         $query->orderByDesc('item_product_counter');
+        //     } else if ($this->sort == 'seller') {
 
-                $query->orderByDesc('item_product_sold');
-            } else if ($this->sort == 'date') {
+        //         $query->orderByDesc('item_product_sold');
+        //     } else if ($this->sort == 'date') {
 
-                $query->orderByDesc('item_product_created_at');
-            } else if ($this->sort == 'low') {
+        //         $query->orderByDesc('item_product_created_at');
+        //     } else if ($this->sort == 'low') {
 
-                $query->orderBy('item_product_price');
-            } else if ($this->sort == 'high') {
+        //         $query->orderBy('item_product_price');
+        //     } else if ($this->sort == 'high') {
 
-                $query->orderByDesc('item_product_price');
-            } else {
+        //         $query->orderByDesc('item_product_price');
+        //     } else {
 
-                $query->orderByDesc('item_product_id');
-            }
-        }
+        //         $query->orderByDesc('item_product_id');
+        //     }
+        // }
 
         return $this->data_product = $query->paginate(config('website.pagination'));
     }

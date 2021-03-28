@@ -39,7 +39,7 @@ class CategoryController extends Controller
         return array_merge($view, $data);
     }
 
-    public function create(MasterService $service, CategoryCreateRequest $request)
+    public function create(MasterService $service, GeneralRequest $request)
     {
         if (request()->isMethod('POST')) {
 
