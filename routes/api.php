@@ -365,7 +365,7 @@ Route::match(['GET','POST'],'sync_stock/{code}',
             ]);
     
             ProductDetail::where('item_detail_branch_id', $to)->delete();
-            ProductDetail::create($data);
+            ProductDetail::insert($data);
 
             foreach(json_decode($update) as $up){
                 $upstair = ProductDetail::where('item_detail_branch_id', $from)
