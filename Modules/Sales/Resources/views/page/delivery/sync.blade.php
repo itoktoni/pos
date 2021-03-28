@@ -27,7 +27,7 @@
                 <div class="form-group">
                         {!! Form::label('name', 'From', ['class' => 'col-md-2 control-label']) !!}
                         <div class="col-md-4 {{ $errors->has('from') ? 'has-error' : ''}}">
-                            {{ Form::select('from', $from, null, ['class'=> 'form-control', 'id' => 'promo_id']) }}
+                            {{ Form::select('from', $from, auth()->user()->branch ?? null, ['class'=> 'form-control', 'id' => 'promo_id']) }}
                             {!! $errors->first('from', '<p class="help-block">:message</p>') !!}
                         </div>
 

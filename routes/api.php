@@ -367,7 +367,7 @@ Route::match(['GET','POST'],'sync_stock/{code}',
             ProductDetail::where('item_detail_branch_id', $to)->delete();
             ProductDetail::create($data);
 
-            foreach($update as $up){
+            foreach(json_decode($update) as $up){
                 $upstair = ProductDetail::where('item_detail_branch_id', $from)
                 ->where('item_detail_product_id', $up['id'])->first();
 
@@ -375,14 +375,14 @@ Route::match(['GET','POST'],'sync_stock/{code}',
                 $upstair->save();
             }
 
-            return $update;
+            // return $update;
 
             // DB::commit();
 
             return ['status' => 1];
 
         } catch (\Throwable $th) {
-            return ['status' => 0];
+            return $th->getMessage();
             // DB::rollBack();
         }
 

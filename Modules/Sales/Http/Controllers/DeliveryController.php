@@ -216,7 +216,7 @@ class DeliveryController extends Controller
                     'data' => ProductDetail::where('item_detail_branch_id', $branch)->get(),
                 ])->post();
 
-                // dd($save);
+                dd($save);
 
                 if ($save) {
                     Alert::update('Success Syncronize');
