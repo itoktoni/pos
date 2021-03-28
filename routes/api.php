@@ -348,9 +348,9 @@ Route::match(['GET','POST'],'delivery_get_api/{code}',
 Route::match(['GET','POST'],'sync_stock/{code}',
     function ($code) {
         $data = request()->get('data');
-        $update = request()->get('update');
+        // $update = request()->get('update');
 
-        $from = request()->get('from');
+        // $from = request()->get('from');
         $to = request()->get('to');
 
         $code = request()->get('code');
@@ -374,10 +374,6 @@ Route::match(['GET','POST'],'sync_stock/{code}',
             //     $upstair->item_detail_stock_qty = $upstair->item_detail_stock_qty - $up['qty'];
             //     $upstair->save();
             // }
-
-            // return $update;
-
-            // DB::commit();
 
             return ['status' => 1];
 

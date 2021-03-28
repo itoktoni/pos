@@ -212,7 +212,7 @@ class DeliveryController extends Controller
                     'date' => request()->get('sales_delivery_date'),
                     'from' => $from,
                     'to' => $to,
-                    'update' => $request->detail,
+                    // 'update' => $request->detail,
                     'data' => ProductDetail::where('item_detail_branch_id', $branch)->get()->toArray(),
                 ])->post();
 
