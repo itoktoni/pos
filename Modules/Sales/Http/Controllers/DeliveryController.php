@@ -317,11 +317,15 @@ class DeliveryController extends Controller
             'sales_order_sum_total',
             'sales_order_core_user_id',
         ])->setEagerLoads([])->where('sales_order_from_id', auth()->user()->branch)
-            ->whereDate('sales_order_date_order', Carbon::today())->get();
+            ->whereNull('sales_order_date_sync');
 
-        $detail = OrderDetailFacades::join(OrderFacades::getTable(), OrderFacades::getKeyName(), 'sales_order_detail_order_id')
+        
+            
+        if (request()->isMethod('POST')) {
+
+            $detail = OrderDetailFacades::join(OrderFacades::getTable(), OrderFacades::getKeyName(), 'sales_order_detail_order_id')
             ->setEagerLoads([])
-            ->whereDate('sales_order_date_order', Carbon::today())
+            ->whereNull('sales_order_date_sync')
             ->select([
                 'sales_order_detail_order_id',
                 'sales_order_detail_item_product_detai_id',
@@ -329,21 +333,28 @@ class DeliveryController extends Controller
                 'sales_order_detail_qty',
                 'sales_order_detail_price',
                 'sales_order_detail_total',
-            ])->get();
-            
-        if (request()->isMethod('POST')) {
+            ]);
 
             $branch = auth()->user()->branch;
-            $curl = Curl::to(config('website.sync') . 'api/sync_transaction_api')->withData([
-                'data' => $order->toArray(),
-                'detail' => $detail->toArray(),
+            $curl = Curl::to(config('website.sync') . 'api/sync_transaction_api')
+            ->withData([
+                'data' => $order->get()->toArray(),
+                'detail' => $detail->get()->toArray(),
             ])->post();
+
+            $order->update([
+                'sales_order_date_sync' => date('Y-m-d H:i:s')
+            ]);
+
+            $detail->update([
+                'sales_order_detail_date_sync' => date('Y-m-d H:i:s')
+            ]);
 
             Alert::update('Success Syncronize');
         }
 
         return view(Helper::setViewForm($this->template, 'transaction', $this->folder))->with([
-            'order' => $order,
+            'order' => $order->whereNull('sales_order_date_sync')->get(),
             'template' => $this->template,
         ]);
     }

@@ -80,6 +80,7 @@ class Order extends Model
         'sales_order_courier_service',
         'sales_order_courier_waybill',
         'sales_order_courier_date',
+        'sales_order_date_sync',
     ];
 
     public $timestamps = true;

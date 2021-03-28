@@ -43,6 +43,7 @@ class OrderDetail extends Model
         'sales_order_detail_variant_name',
         'sales_order_detail_stock',
         'sales_order_detail_sent',
+        'sales_order_detail_date_sync',
     ];
 
     public $timestamps = false;
