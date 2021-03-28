@@ -124,7 +124,7 @@ class PosLivewire extends Component
     public function updateProduct()
     {
         $detail = new ProductDetail();
-        $query = ProductFacades::dataRepository()->leftJoin($detail->getTable(), 'item_detail_product_id', ProductFacades::getKeyName())->where('item_detail_branch_id', auth()->user()->branch);
+        $query = ProductFacades::leftJoin($detail->getTable(), 'item_detail_product_id', ProductFacades::getKeyName())->where('item_detail_branch_id', auth()->user()->branch);
 
         if (!empty($this->search)) {
             $query->where('item_product_name', 'like', "%$this->search%");

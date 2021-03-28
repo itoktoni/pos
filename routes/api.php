@@ -309,8 +309,8 @@ Route::match(
         'GET',
         'POST'
     ],
-    'sync_transaction_api/{code}',
-    function ($code) {
+    'sync_transaction_api',
+    function () {
         $data = request()->get('data');
         $detail = request()->get('detail');
         OrderFacades::insert($data);
