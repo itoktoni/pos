@@ -375,6 +375,8 @@ Route::match(['GET','POST'],'sync_stock/{code}',
                 $upstair->save();
             }
 
+            return $update;
+
             // DB::commit();
 
             return ['status' => 1];
