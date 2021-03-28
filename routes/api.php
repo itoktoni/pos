@@ -367,13 +367,13 @@ Route::match(['GET','POST'],'sync_stock/{code}',
             ProductDetail::where('item_detail_branch_id', $to)->delete();
             ProductDetail::insert($data);
 
-            foreach(json_decode($update) as $up){
-                $upstair = ProductDetail::where('item_detail_branch_id', $from)
-                ->where('item_detail_product_id', $up['id'])->first();
+            // foreach(json_decode($update) as $up){
+            //     $upstair = ProductDetail::where('item_detail_branch_id', $from)
+            //     ->where('item_detail_product_id', $up['id'])->first();
 
-                $upstair->item_detail_stock_qty = $upstair->item_detail_stock_qty - $up['qty'];
-                $upstair->save();
-            }
+            //     $upstair->item_detail_stock_qty = $upstair->item_detail_stock_qty - $up['qty'];
+            //     $upstair->save();
+            // }
 
             // return $update;
 
