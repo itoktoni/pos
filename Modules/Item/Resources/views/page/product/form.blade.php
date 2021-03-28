@@ -34,8 +34,24 @@
 </div>
 
 <div class="form-group">
+
     {!! Form::label('name', 'Description', ['class' => 'col-md-2 control-label']) !!}
-    <div class="mb-md col-md-10">
+    <div class="mb-md col-md-4">
         {!! Form::textarea($form.'description', null, ['class' => 'form-control', 'id' => '', 'rows' => '5']) !!}
     </div>
+
+    {!! Form::label('name', 'Main Image', ['class' => 'col-md-2 control-label']) !!}
+    <div class="col-md-3 {{ $errors->has($form.'image') ? 'has-error' : ''}}">
+        <input type="file" name="{{ $form.'file' }}"
+            class="{{ $errors->has($form.'file') ? 'has-error' : ''}} btn btn-default btn-sm btn-block">
+        {!! $errors->first($form.'image', '<p class="help-block">:message</p>') !!}
+    </div>
+
+    <div class="col-md-1">
+        @isset ($model->item_product_image)
+        <img width="100%" class="img-thumbnail"
+            src="{{ Helper::files($template.'/thumbnail_'.$model->item_product_image) }}" alt="">
+        @endisset
+    </div>
+
 </div>

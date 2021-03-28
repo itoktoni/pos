@@ -32,25 +32,6 @@
 
 </div>
 
-
-<div class="form-group">
-
-    {!! Form::label('name', 'Main Image', ['class' => 'col-md-2 control-label']) !!}
-    <div class="col-md-4 {{ $errors->has($form.'image') ? 'has-error' : ''}}">
-        <input type="file" name="{{ $form.'file' }}"
-            class="{{ $errors->has($form.'file') ? 'has-error' : ''}} btn btn-default btn-sm btn-block">
-        {!! $errors->first($form.'image', '<p class="help-block">:message</p>') !!}
-    </div>
-
-    <div class="col-md-4">
-        @isset ($model->item_product_image)
-        <img width="100%" class="img-thumbnail"
-            src="{{ Helper::files($template.'/thumbnail_'.$model->item_product_image) }}" alt="">
-        @endisset
-    </div>
-
-</div>
-
 <hr>
 
 @include($folder.'::page.'.$template.'.sales.detail')
