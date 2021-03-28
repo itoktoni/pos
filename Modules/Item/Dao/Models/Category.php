@@ -15,15 +15,9 @@ class Category extends Model
     'item_category_id',
     'item_category_slug',
     'item_category_name',
-    'item_category_image',
-    'item_category_flag',
-    'item_category_status',
-    'item_category_homepage',
-    'item_category_icon',
     'item_category_description',
     'item_category_created_at',
     'item_category_created_by',
-    'item_category_icon',
   ];
 
   public $timestamps = true;
@@ -40,12 +34,7 @@ class Category extends Model
   public $datatable = [
     'item_category_id'          => [false => 'ID'],
     'item_category_name'        => [true => 'Name'],
-    'item_category_flag'        => [false => 'Flag'],
     'item_category_slug'        => [false => 'Slug'],
-    'item_category_image'        => [false => 'Images'],
-    'item_category_icon'        => [false => 'Icon'],
-    'item_category_homepage'        => [false => 'Homepage'],
-    'item_category_status'        => [false => 'Status'],
     'item_category_description' => [true => 'Description'],
     'item_category_created_by'  => [false => 'Updated At'],
   ];

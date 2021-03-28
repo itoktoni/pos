@@ -11,7 +11,7 @@ use Illuminate\Support\Str;
 
 class Product extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
     protected $table = 'item_product';
     protected $branch = 'item_branch_id';
     protected $primaryKey = 'item_product_id';
@@ -68,8 +68,8 @@ class Product extends Model
     ];
 
     public $timestamps = true;
-    public $incrementing = false;
-    public $keyType = 'string';
+    public $incrementing = true;
+    // public $keyType = 'string';
     public $rules = [
         'item_product_name' => 'required|min:3|unique:item_product',
         'item_product_buy' => 'required',
@@ -85,49 +85,20 @@ class Product extends Model
     public $searching = 'item_product_name';
     public $datatable = [
         'item_product_id' => [false => 'ID'],
-        // 'branch_name' => [true => 'Branch'],
         'item_product_item_category_id' => [false => 'Category'],
         'item_category_name' => [true => 'Category'],
         'item_product_name' => [true => 'Product Name'],
         'branch_name' => [true => 'Branch'],
-        'item_product_item_brand_id' => [false => 'Brand'],
         'item_category_slug' => [false => 'Category'],
         'item_category_description' => [false => 'Category'],
-        'item_category_image' => [false => 'Category'],
-        'item_product_min_order' => [false => 'Min Order'],
-        'item_product_min_stock' => [false => 'Min Stock'],
-        'item_product_stroke' => [false => 'Buy'],
         'item_product_buy' => [false => 'Buy'],
         'item_product_sell' => [true => 'Harga'],
-        'item_product_weight' => [false => 'Gram'],
-        'item_detail_stock_qty' => [true => 'Stock'],
         'item_product_image' => [false => 'Images'],
         'item_product_slug' => [false => 'Slug'],
-        'item_product_display' => [false => 'Display'],
-        'item_product_item_tag_json' => [false => 'Tag'],
         'item_product_description' => [false => 'Description'],
         'item_product_created_at' => [false => 'Created At'],
         'item_product_created_by' => [false => 'Updated At'],
-        'item_product_langganan' => [false => 'Updated At'],
-        'item_product_flag_name' => [false => 'Flag Name'],
-        'item_product_flag_background' => [false => 'Flag Background'],
-        'item_product_flag_color' => [false => 'Flag Color'],
-        'item_product_is_variant' => [false => 'Variant'],
-        'item_product_counter' => [false => 'Variant'],
-        'item_product_sold' => [false => 'Variant'],
-        'item_product_page_active_1' => [false => 'Variant'],
-        'item_product_page_active_2' => [false => 'Variant'],
-        'item_product_page_active_3' => [false => 'Variant'],
-        'item_product_page_name_1' => [false => 'Variant'],
-        'item_product_page_name_2' => [false => 'Variant'],
-        'item_product_page_name_3' => [false => 'Variant'],
-        'item_product_page_content_1' => [false => 'Variant'],
-        'item_product_page_content_2' => [false => 'Variant'],
-        'item_product_page_content_3' => [false => 'Variant'],
-        'item_product_is_variant' => [false => 'Variant'],
-        'item_product_sku' => [false => 'Variant'],
-        'item_product_branch_id' => [false => 'Branch'],
-        // 'item_detail_stock_qty' => [true => 'Qty'],
+        'branch_id' => [false => 'Branch'],
     ];
 
     public $status = [
@@ -150,10 +121,10 @@ class Product extends Model
         parent::boot();
         $statis = 'data';
         parent::creating(function ($model) {
-            if(empty($model->item_product_id)){
+            // if(empty($model->item_product_id)){
 
-                $model->item_product_id = Helper::autoNumber($model->getTable(), 'item_product_id', 'P' . date('ymd'), config('website.autonumbers'));
-            }
+            //     $model->item_product_id = Helper::autoNumber($model->getTable(), 'item_product_id', 'P' . date('ymd'), config('website.autonumbers'));
+            // }
             // $model->item_product_code = Helper::autoNumber($model->getTable(), 'item_product_id', date('m'), 4);
             
             // if($model->item_product_is_variant == 0){
@@ -190,21 +161,21 @@ class Product extends Model
                 $model->item_product_image = $name;
             }
 
-            if ($model->item_product_min_order <= 0) {
-                $model->item_product_min_order = 1;
-            }
+            // if ($model->item_product_min_order <= 0) {
+            //     $model->item_product_min_order = 1;
+            // }
 
-            if (request()->has('item_product_item_tag_json')) {
-                $model->item_product_item_tag_json = json_encode(request()->get('item_product_item_tag_json'));
-            }
+            // if (request()->has('item_product_item_tag_json')) {
+            //     $model->item_product_item_tag_json = json_encode(request()->get('item_product_item_tag_json'));
+            // }
 
             if ($model->item_product_name && empty($model->item_product_slug)) {
                 $model->item_product_slug = Str::slug($model->item_product_name);
             } else {
-                $model->item_product_slug = Str::slug($model->item_product_slug.'-'.rand(10,1000));
+                $model->item_product_slug = Str::slug($model->item_product_slug);
             }
 
-            $model->item_product_branch_id = auth()->check() ? auth()->user()->branch : '';
+            // $model->item_product_branch_id = auth()->check() ? auth()->user()->branch : '';
 
         });
 
