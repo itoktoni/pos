@@ -88,7 +88,7 @@ class Product extends Model
         'item_product_item_category_id' => [false => 'Category'],
         'item_category_name' => [true => 'Category'],
         'item_product_name' => [true => 'Product Name'],
-        'branch_name' => [true => 'Branch'],
+        'branch_name' => [false => 'Branch'],
         'item_category_slug' => [false => 'Category'],
         'item_category_description' => [false => 'Category'],
         'item_product_buy' => [false => 'Buy'],
