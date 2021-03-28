@@ -95,6 +95,7 @@ class Product extends Model
         'item_product_sell' => [true => 'Harga'],
         'item_product_image' => [false => 'Images'],
         'item_product_slug' => [false => 'Slug'],
+        'item_detail_stock_qty' => [true => 'Stock'],
         'item_product_description' => [false => 'Description'],
         'item_product_created_at' => [false => 'Created At'],
         'item_product_created_by' => [false => 'Updated At'],
