@@ -24,6 +24,19 @@
             <div class="panel-body line">
                 <div class="">
 
+                <div class="form-group">
+                        {!! Form::label('name', 'From', ['class' => 'col-md-2 control-label']) !!}
+                        <div class="col-md-4 {{ $errors->has('from') ? 'has-error' : ''}}">
+                            {{ Form::select('from', $from, null, ['class'=> 'form-control', 'id' => 'promo_id']) }}
+                            {!! $errors->first('from', '<p class="help-block">:message</p>') !!}
+                        </div>
+
+                        {!! Form::label('name', 'To', ['class' => 'col-md-2 control-label']) !!}
+                        <div class="col-md-4 {{ $errors->has('to') ? 'has-error' : ''}}">
+                            {{ Form::select('to', $to, null, ['class'=> 'form-control', 'id' => 'promo_id']) }}
+                            {!! $errors->first('to', '<p class="help-block">:message</p>') !!}
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         {!! Form::label('name', 'Status', ['class' => 'col-md-2 control-label']) !!}
@@ -112,7 +125,7 @@
                     <a target="__blank" href="{!! route($module.'_print_order', ['code'=> $model->{$key}]) !!}"
                         class="btn btn-danger">PDF</a>
                     @endif
-                    <button type="submit" class="btn btn-primary">Save</button>
+                    <button  onclick="return confirm('Are you sure to sync data ?');"  type="submit" class="btn btn-primary">Save</button>
                 </div>
             </div>
 

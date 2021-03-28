@@ -2,6 +2,7 @@
 
 namespace Modules\Sales\Dao\Models;
 
+use App\Dao\Models\Branch;
 use App\Dao\Models\Company;
 use App\User;
 use Illuminate\Database\Eloquent\Model;
@@ -121,12 +122,12 @@ class Delivery extends Model
 
     public function from()
     {
-        return $this->hasOne(Area::class, 'rajaongkir_area_id', 'sales_delivery_from_id');
+        return $this->hasOne(Branch::class, 'branch_id', 'sales_delivery_from_id');
     }
 
     public function to()
     {
-        return $this->hasOne(Area::class, 'rajaongkir_area_id', 'sales_delivery_to_id');
+        return $this->hasOne(Branch::class, 'branch_id', 'sales_delivery_to_id');
     }
 
     public static function boot()

@@ -82,7 +82,7 @@ class PurchaseController extends Controller
     {
         if (request()->isMethod('POST')) {
             $data = $service->save(self::$model, $request->all());
-            return Response::redirectBack($data);
+            return Response::redirectToRoute('sales_purchase_update', ['code' => $data['data']->sales_purchase_id]);
         }
         return view(Helper::setViewSave($this->template, $this->folder))->with($this->share([
             'model' => self::$model,
@@ -94,11 +94,14 @@ class PurchaseController extends Controller
         if (request()->isMethod('POST')) {
             $data = $service->update(self::$model, $request->all());
             $data = $request->all();
+            $branch = auth()->user()->branch;
 
             if($request->sales_purchase_status == 2){
                 
                 foreach($request->detail as $detail){
-                    $product = ProductDetail::where('item_detail_product_id', $detail['sales_purchase_detail_item_product_id'])->first();
+                    $product = ProductDetail::where('item_detail_product_id', $detail['sales_purchase_detail_item_product_id'])
+                    ->where('item_detail_branch_id', $branch)->first();
+                    
                     if($product){
                         $qty = $product->item_detail_stock_qty;
                         $product->item_detail_stock_qty = $qty + $detail['sales_purchase_detail_qty'];
@@ -107,7 +110,7 @@ class PurchaseController extends Controller
                     else{
                         ProductDetail::create([
                             'item_detail_stock_qty' => $detail['sales_purchase_detail_qty'],
-                            'item_detail_branch_id' => auth()->user()->branch,
+                            'item_detail_branch_id' => $branch,
                             'item_detail_product_id' => $detail['sales_purchase_detail_item_product_id'],
                             'item_detail_stock_enable' => 1,
                             'item_detail_status' => null,

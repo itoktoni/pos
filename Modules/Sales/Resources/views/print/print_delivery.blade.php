@@ -615,9 +615,9 @@
                     </td>
                 </tr>
                 <tr class="contact">
-                    <td colspan='4' align="center" style="vertical-align: middle;">
+                    <td colspan='4' align="left" style="vertical-align: middle;">
                         <strong>
-                            {{ $master->customer->crm_customer_name ?? '' }}
+                            From : {{ $master->from->branch_name ?? '' }} | To :  {{ $master->to->branch_name ?? '' }}
                         </strong>
                     </td>
                     <td colspan='4' class="message">

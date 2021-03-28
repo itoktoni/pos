@@ -348,7 +348,10 @@ Route::match(['GET','POST'],'delivery_get_api/{code}',
 Route::match(['GET','POST'],'sync_stock/{code}',
     function ($code) {
         $data = request()->get('data');
-        $branch = request()->get('branch');
+        $update = request()->get('update');
+
+        $from = request()->get('from');
+        $to = request()->get('to');
 
         $code = request()->get('code');
         $date = request()->get('date');
@@ -361,8 +364,16 @@ Route::match(['GET','POST'],'sync_stock/{code}',
                 'sales_delivery_date_sync' => $date
             ]);
     
-            ProductDetail::where('item_detail_branch_id', $branch)->delete();
+            ProductDetail::where('item_detail_branch_id', $to)->delete();
             ProductDetail::create($data);
+
+            foreach($update as $up){
+                $upstair = ProductDetail::where('item_detail_branch_id', $up['branch'])
+                ->where('item_detail_product_id', $up['id'])->first();
+
+                $upstair->item_detail_stock_qty = $upstair->item_detail_stock_qty - $up['qty'];
+                $upstair->save();
+            }
 
             // DB::commit();
 

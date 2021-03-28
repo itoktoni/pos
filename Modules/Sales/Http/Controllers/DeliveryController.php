@@ -5,7 +5,6 @@ namespace Modules\Sales\Http\Controllers;
 use App\Dao\Repositories\BranchRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Services\MasterService;
-use Carbon\Carbon;
 use Illuminate\Http\Request as Request;
 use Ixudra\Curl\Facades\Curl;
 use Modules\Finance\Dao\Repositories\PaymentRepository;
@@ -173,7 +172,11 @@ class DeliveryController extends Controller
             if ($request->sales_delivery_status == 2) {
 
                 $branch = auth()->user()->branch;
+                
                 $code = request()->get('code');
+                $from = request()->get('from');
+                $to = request()->get('to');
+
                 foreach ($request->detail as $detail) {
 
                     $check_product = ProductFacades::find($detail['id']);
@@ -203,15 +206,21 @@ class DeliveryController extends Controller
                         ]);
                     }
                 }
+
                 $save = Curl::to(config('website.sync') . 'api/sync_stock/' . $code)->withData([
                     'code' => $code,
                     'date' => request()->get('sales_delivery_date'),
-                    'branch' => $branch,
+                    'from' => $from,
+                    'to' => $to,
+                    'update' => $request->detail,
                     'data' => ProductDetail::where('item_detail_branch_id', $branch)->get(),
                 ])->post();
 
                 if ($save) {
                     Alert::update('Success Syncronize');
+                }
+                else{
+                    Alert::error('Gagal Syncron');
                 }
             }
 
@@ -221,9 +230,14 @@ class DeliveryController extends Controller
         $curl = Curl::to(config('website.sync') . 'api/delivery_get_api/' . $code)->post();
 
         $data = json_decode($curl);
+        $branch = Helper::shareOption((new BranchRepository()),false);
+        $from = [$data->sales_delivery_from_id => $branch[$data->sales_delivery_from_id]];
+        $to = [$data->sales_delivery_to_id => $branch[$data->sales_delivery_to_id]];
 
         return view(Helper::setViewForm($this->template, 'sync', $this->folder))->with($this->share([
             'model' => $data,
+            'from' => $from,
+            'to' => $to,
         ]));
     }
 
@@ -277,16 +291,22 @@ class DeliveryController extends Controller
         ]);
     }
 
+    private function sync_stock()
+    {
+        $branch = auth()->user()->branch;
+        $product_detail = ProductDetail::setEagerLoads([])->select(['item_detail_stock_qty', 'item_detail_branch_id', 'item_detail_product_id'])->get();
+        $curl = Curl::to(config('website.sync') . 'api/sync_product_api/' . $branch)->withData([
+            'data' => $product_detail->toArray(),
+        ])->post();
+
+        return $curl;
+    }
+
     public function product()
     {
         if (request()->isMethod('POST')) {
 
-            $branch = auth()->user()->branch;
-            $product_detail = ProductDetail::setEagerLoads([])->select(['item_detail_stock_qty', 'item_detail_branch_id', 'item_detail_product_id'])->get();
-            $curl = Curl::to(config('website.sync') . 'api/sync_product_api/' . $branch)->withData([
-                'data' => $product_detail->toArray(),
-            ])->post();
-
+            $this->sync_stock();
             Alert::update('Success Syncronize');
         }
 
@@ -319,36 +339,36 @@ class DeliveryController extends Controller
         ])->setEagerLoads([])->where('sales_order_from_id', auth()->user()->branch)
             ->whereNull('sales_order_date_sync');
 
-        
-            
         if (request()->isMethod('POST')) {
 
             $detail = OrderDetailFacades::join(OrderFacades::getTable(), OrderFacades::getKeyName(), 'sales_order_detail_order_id')
-            ->setEagerLoads([])
-            ->whereNull('sales_order_date_sync')
-            ->select([
-                'sales_order_detail_order_id',
-                'sales_order_detail_item_product_detai_id',
-                'sales_order_detail_item_product_id',
-                'sales_order_detail_qty',
-                'sales_order_detail_price',
-                'sales_order_detail_total',
-            ]);
+                ->setEagerLoads([])
+                ->whereNull('sales_order_date_sync')
+                ->select([
+                    'sales_order_detail_order_id',
+                    'sales_order_detail_item_product_detai_id',
+                    'sales_order_detail_item_product_id',
+                    'sales_order_detail_qty',
+                    'sales_order_detail_price',
+                    'sales_order_detail_total',
+                ]);
 
             $branch = auth()->user()->branch;
             $curl = Curl::to(config('website.sync') . 'api/sync_transaction_api')
-            ->withData([
-                'data' => $order->get()->toArray(),
-                'detail' => $detail->get()->toArray(),
-            ])->post();
+                ->withData([
+                    'data' => $order->get()->toArray(),
+                    'detail' => $detail->get()->toArray(),
+                ])->post();
 
             $order->update([
-                'sales_order_date_sync' => date('Y-m-d H:i:s')
+                'sales_order_date_sync' => date('Y-m-d H:i:s'),
             ]);
 
             $detail->update([
-                'sales_order_detail_date_sync' => date('Y-m-d H:i:s')
+                'sales_order_detail_date_sync' => date('Y-m-d H:i:s'),
             ]);
+
+            $this->sync_stock();
 
             Alert::update('Success Syncronize');
         }
