@@ -15,6 +15,7 @@ use Modules\Sales\Dao\Repositories\report\ReportDeliveryRepository;
 use Modules\Sales\Dao\Repositories\report\ReportDetailOrderRepository;
 use Modules\Sales\Dao\Repositories\report\ReportPaymentRepository;
 use Modules\Sales\Dao\Repositories\report\ReportProductionRepository;
+use Modules\Sales\Dao\Repositories\report\ReportStockRepository;
 use Modules\Sales\Dao\Repositories\report\ReportSummaryOrderRepository;
 use Plugin\Helper;
 
@@ -39,11 +40,16 @@ class ReportController extends Controller
     private function share($data = [])
     {
         $purchase = Helper::shareOption(new OrderRepository());
+        $branch = Helper::shareOption(new BranchRepository());
+        $product = Helper::shareOption(new ProductRepository());
+        
         $promo = Helper::shareOption(new PromoRepository())->prepend('Select All Promo', '');
         $status = Helper::shareStatus((new OrderRepository())->status)->prepend('All Status', '');
 
         $view = [
             'promo' => $promo,
+            'branch' => $branch,
+            'product' => $product,
             'status' => $status,
             'purchase' => $purchase,
             'template' => $this->template,
@@ -120,11 +126,11 @@ class ReportController extends Controller
 
     }
 
-    public function delivery()
+    public function stock()
     {
         if (request()->isMethod('POST')) {
-            $name = 'report_delivery_' . date('Y_m_d') . '.xlsx';
-            return $this->excel->download(new ReportDeliveryRepository(), $name);
+            $name = 'report_stock_' . date('Y_m_d') . '.xlsx';
+            return $this->excel->download(new ReportStockRepository(), $name);
         }
         return view(Helper::setViewForm($this->template, __FUNCTION__, config('folder')))->with($this->share());
     }

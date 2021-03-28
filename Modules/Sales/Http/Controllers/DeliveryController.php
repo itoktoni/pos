@@ -6,6 +6,7 @@ use App\Dao\Repositories\BranchRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Services\MasterService;
 use Illuminate\Http\Request as Request;
+use Illuminate\Support\Facades\DB;
 use Ixudra\Curl\Facades\Curl;
 use Modules\Finance\Dao\Repositories\PaymentRepository;
 use Modules\Finance\Dao\Repositories\TaxRepository;
@@ -271,6 +272,12 @@ class DeliveryController extends Controller
             $curl = Curl::to(config('website.sync') . 'api/delivery_api/' . $branch)->post();
             $data = json_decode($curl);
 
+            DB::table('sync')->insert([
+                'sync_branch' => auth()->user()->branch,
+                'sync_module' => 'transfer',
+                'sync_datetime' => date('Y-m-d H:i:s'),
+            ]);
+
             return DataTables::of($data)
                 ->addColumn('checkbox', function ($model) {
                     return '<input type="checkbox" name="id[]" value="{{ $model->sales_delivery_id }}">';
@@ -299,6 +306,12 @@ class DeliveryController extends Controller
         $curl = Curl::to(config('website.sync') . 'api/sync_product_api/' . $branch)->withData([
             'data' => $product_detail->toArray(),
         ])->post();
+
+        DB::table('sync')->insert([
+            'sync_branch' => auth()->user()->branch,
+            'sync_module' => 'stock',
+            'sync_datetime' => date('Y-m-d H:i:s'),
+        ]);
 
         return $curl;
     }
@@ -370,6 +383,12 @@ class DeliveryController extends Controller
             ]);
 
             $this->sync_stock();
+
+            DB::table('sync')->insert([
+                'sync_branch' => auth()->user()->branch,
+                'sync_module' => 'transaction',
+                'sync_datetime' => date('Y-m-d H:i:s'),
+            ]);
 
             Alert::update('Success Syncronize');
         }

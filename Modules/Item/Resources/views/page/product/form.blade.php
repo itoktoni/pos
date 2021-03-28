@@ -30,7 +30,6 @@
         {!! $errors->first($form.'sell', '<p class="help-block">:message</p>') !!}
     </div>
 
-
 </div>
 
 <div class="form-group">

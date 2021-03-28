@@ -53,28 +53,25 @@ class ProductRepository extends Product implements MasterInterface
             return $query;
     }
 
+    public function stockRepository()
+    {
+        $detail = new ProductDetail();
+        $list = Helper::dataColumn($this->datatable, $this->primaryKey);
+        $query = $this->select($list)
+            ->leftJoin($detail->getTable(), 'item_detail_product_id', $this->getKeyName())
+            ->leftJoin(BranchFacades::getTable(), 'item_detail_branch_id', BranchFacades::getKeyName())
+            ->leftJoin(CategoryFacades::getTable(), CategoryFacades::getKeyName(), 'item_product_item_category_id')
+            ->groupBy('item_product.item_product_id', 'item_detail_branch_id');
+            // ->where('item_detail_branch_id', auth()->user()->branch);
+            return $query;
+    }
+
     public function getBestSeller(){
        return $this->dataRepository()->OrderByDesc('item_product_sold', 'DESC')->limit(12);
     }
 
     public function getNewProduct(){
        return $this->dataRepository()->OrderByDesc('item_product_counter')->OrderByDesc('item_product_id')->limit(12);
-    }
-
-    public function stockRepository()
-    {
-        $brand = self::getBrand();
-        $category = self::getCategory();
-        $color = new ColorRepository();
-
-        $list = Helper::dataColumn($this->stock, $this->primaryKey);
-        $query = $this->select($list)
-            ->leftJoin('view_stock_product', 'product', 'item_product_id')
-            ->leftJoin($brand->getTable(), $brand->getKeyName(), 'item_product_item_brand_id')
-            ->leftJoin($color->getTable(), $color->getKeyName(), 'color')
-            ->leftJoin($category->getTable(), $category->getKeyName(), 'item_product_item_category_id')
-            ->orderBy('item_product_created_at', 'DESC')->orderBy('item_product_name', 'ASC');
-        return $query;
     }
 
     public function saveRepository($request)

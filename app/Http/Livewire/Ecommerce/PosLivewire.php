@@ -4,8 +4,8 @@ namespace App\Http\Livewire\Ecommerce;
 
 use App\Dao\Facades\BranchFacades;
 use charlieuki\ReceiptPrinter\ReceiptPrinter as ReceiptPrinter;
-use Chrome;
 use Darryldecode\Cart\Facades\CartFacade as Cart;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Session;
@@ -18,8 +18,6 @@ use Modules\Rajaongkir\Dao\Repositories\ProvinceRepository;
 use Modules\Sales\Dao\Facades\OrderDetailFacades;
 use Modules\Sales\Dao\Facades\OrderFacades;
 use Plugin\Helper;
-use Ixudra\Curl\Facades\Curl;
-
 
 class PosLivewire extends Component
 {
@@ -33,6 +31,7 @@ class PosLivewire extends Component
     public $sort;
     public $murah;
     public $total;
+    public $message;
 
     protected $queryString = ['murah' => ['except' => '']];
 
@@ -215,97 +214,104 @@ class PosLivewire extends Component
         $this->emit('updateProduct');
     }
 
-    public function actionLogout(){
+    public function actionLogout()
+    {
 
         return redirect()->route('logout');
     }
 
     public function createOrder()
     {
-        $this->total = Cart::getTotal();
-        $this->completed = true;
+        if ($this->checkValid()) {
 
-        DB::beginTransaction();
+            $this->total = Cart::getTotal();
+            $this->completed = true;
 
-        $autonumber_order = Helper::autoNumber(OrderFacades::getTable(), OrderFacades::getKeyName(), config('website.prefix') . date('ym'), config('website.autonumber'));
+            DB::beginTransaction();
 
-        $order['sales_order_id'] = $autonumber_order;
-        $order['sales_order_status'] = 1;
-        $order['sales_order_date_order'] = date('Y-m-d H:i:s');
+            $autonumber_order = Helper::autoNumber(OrderFacades::getTable(), OrderFacades::getKeyName(), config('website.prefix').auth()->user()->branch . date('ym'), config('website.autonumber'));
 
-        if (auth()->check()) {
+            $order['sales_order_id'] = $autonumber_order;
+            $order['sales_order_status'] = 1;
+            $order['sales_order_date_order'] = date('Y-m-d H:i:s');
 
-            $order['sales_order_core_user_id'] = auth()->user()->id;
-        }
+            if (auth()->check()) {
 
-        $branch = BranchFacades::find(auth()->user()->branch);
-        $order['sales_order_from_id'] = $branch->branch_id;
-        $order['sales_order_from_name'] = $branch->branch_name;
-        $order['sales_order_from_phone'] = Helper::convertPhone($branch->branch_phone);
-        $order['sales_order_from_email'] = $branch->branch_email;
-        $order['sales_order_from_address'] = $branch->branch_address;
-        $order['sales_order_from_area'] = $branch->branch_rajaongkir_area_id;
-
-        $order['sales_order_sum_bayar'] = session('bayar') ?? 0;
-        $order['sales_order_sum_kembalian'] = session('bayar') > 0 ? session('bayar') - $this->total : 0;
-        $order['sales_order_sum_total'] = $this->total;
-
-        $check_order = OrderFacades::saveRepository($order);
-
-        if (isset($check_order['status']) && $check_order['status']) {
-
-            foreach (Cart::getContent() as $item) {
-
-                $product['sales_order_detail_order_id'] = $autonumber_order;
-
-                $product['sales_order_detail_notes'] = $item->notes;
-
-                $product['sales_order_detail_item_product_detai_id'] = $item->id;
-                $product['sales_order_detail_item_product_id'] = $item->id;
-                $product['sales_order_detail_item_product_description'] = $item->name;
-
-                $product['sales_order_detail_qty'] = $item->quantity;
-                $product['sales_order_detail_price'] = $item->price;
-                $product['sales_order_detail_total'] = $item->getPriceSum();
-
-                $check_item = OrderDetailFacades::saveRepository($product);
-
-                $item_detail = ProductDetail::where('item_detail_product_id', $item->id)
-                    ->where('item_detail_branch_id', auth()->user()->branch);
-                if ($item_detail->get()->count() > 0) {
-
-                    $total_qty = $item_detail->get()->sum('item_detail_stock_qty');
-                    $selisih = $total_qty - $item->quantity;
-
-                    $item_detail->delete();
-
-                    $check = ProductDetail::create([
-                        'item_detail_stock_qty' => $selisih,
-                        'item_detail_branch_id' => auth()->user()->branch,
-                        'item_detail_product_id' => $item->id,
-                    ]);
-                }
-
-                if (isset($check_item['status']) && $check_item['status']) {
-
-                    DB::commit();
-
-                } else {
-                    DB::rollBack();
-                    $this->completed = false;
-                }
+                $order['sales_order_core_user_id'] = auth()->user()->id;
             }
+
+            $branch = BranchFacades::find(auth()->user()->branch);
+            $order['sales_order_from_id'] = $branch->branch_id;
+            $order['sales_order_from_name'] = $branch->branch_name;
+            $order['sales_order_from_phone'] = Helper::convertPhone($branch->branch_phone);
+            $order['sales_order_from_email'] = $branch->branch_email;
+            $order['sales_order_from_address'] = $branch->branch_address;
+            $order['sales_order_from_area'] = $branch->branch_rajaongkir_area_id;
+
+            $order['sales_order_sum_bayar'] = session('bayar') ?? 0;
+            $order['sales_order_sum_kembalian'] = session('bayar') > 0 ? session('bayar') - $this->total : 0;
+            $order['sales_order_sum_total'] = $this->total;
+
+            $check_order = OrderFacades::saveRepository($order);
+
+            if (isset($check_order['status']) && $check_order['status']) {
+
+                foreach (Cart::getContent() as $item) {
+
+                    $product['sales_order_detail_order_id'] = $autonumber_order;
+
+                    $product['sales_order_detail_notes'] = $item->notes;
+
+                    $product['sales_order_detail_item_product_detai_id'] = $item->id;
+                    $product['sales_order_detail_item_product_id'] = $item->id;
+                    $product['sales_order_detail_item_product_description'] = $item->name;
+
+                    $product['sales_order_detail_qty'] = $item->quantity;
+                    $product['sales_order_detail_price'] = $item->price;
+                    $product['sales_order_detail_total'] = $item->getPriceSum();
+
+                    $check_item = OrderDetailFacades::saveRepository($product);
+
+                    $item_detail = ProductDetail::where('item_detail_product_id', $item->id)
+                        ->where('item_detail_branch_id', auth()->user()->branch);
+                    if ($item_detail->get()->count() > 0) {
+
+                        $total_qty = $item_detail->get()->sum('item_detail_stock_qty');
+                        $selisih = $total_qty - $item->quantity;
+
+                        $item_detail->delete();
+
+                        $check = ProductDetail::create([
+                            'item_detail_stock_qty' => $selisih,
+                            'item_detail_branch_id' => auth()->user()->branch,
+                            'item_detail_product_id' => $item->id,
+                        ]);
+                    }
+
+                    if (isset($check_item['status']) && $check_item['status']) {
+
+                        DB::commit();
+
+                    } else {
+                        DB::rollBack();
+                        $this->completed = false;
+                    }
+                }
+            } else {
+                DB::rollBack();
+                $this->completed = false;
+            }
+
+            if ($this->completed) {
+
+                $this->printPos($autonumber_order);
+            }
+
+            // $this->emit('updateProduct');
         } else {
-            DB::rollBack();
-            $this->completed = false;
+            $this->message = 'Sync Product dan Transfer terlebih dahulu';
         }
 
-        if ($this->completed) {
-
-            $this->printPos($autonumber_order);
-        }
-
-        // $this->emit('updateProduct');
     }
 
     public function printPos($order_id)
@@ -317,7 +323,7 @@ class PosLivewire extends Component
         $store_address = $branch->branch_address;
         $store_phone = $branch->branch_phone;
         $transaction_id = $order_id;
-       
+
         // Init printer
         $printer = new ReceiptPrinter();
         $printer->init(
@@ -365,87 +371,108 @@ class PosLivewire extends Component
 
     public function printAntrian()
     {
-        $branch = BranchFacades::find(auth()->user()->branch);
-        // Set params
-        $mid = $branch->branch_name;
-        $store_name = config('website.name');
-        $store_address = $branch->branch_address;
-        $store_phone = $branch->branch_phone;
+        if ($this->checkValid()) {
 
-        
-        $autonumber_order = Helper::autoNumber(OrderFacades::getTable(), OrderFacades::getKeyName(), config('website.prefix') . date('ym'), config('website.autonumber'));
-        $transaction_id = str_replace(config('website.prefix') . date('ym'), '', $autonumber_order);
-       
-        // Init printer
-        $printer = new ReceiptPrinter();
-        $printer->init(
-            config('receiptprinter.connector_type'),
-            config('receiptprinter.connector_descriptor')
-        );
+            $branch = BranchFacades::find(auth()->user()->branch);
+            // Set params
+            $mid = $branch->branch_name;
+            $store_name = config('website.name');
+            $store_address = $branch->branch_address;
+            $store_phone = $branch->branch_phone;
 
-        // $printer->setLogo("public/files/logo/test.png");
+            $autonumber_order = Helper::autoNumber(OrderFacades::getTable(), OrderFacades::getKeyName(), config('website.prefix').auth()->user()->branch . date('ym'), config('website.autonumber'));
+            $transaction_id = str_replace(config('website.prefix') .auth()->user()->branch. date('ym'), '', $autonumber_order);
 
-        // Set store info
-        $printer->setStore($mid, $store_name, $store_address, $store_phone, null, null);
-
-        // Add items
-        foreach (Cart::getContent() as $item) {
-            $printer->addItem(
-                $item->name,
-                $item->quantity,
-                $item->price
+            // Init printer
+            $printer = new ReceiptPrinter();
+            $printer->init(
+                config('receiptprinter.connector_type'),
+                config('receiptprinter.connector_descriptor')
             );
+
+            // $printer->setLogo("public/files/logo/test.png");
+
+            // Set store info
+            $printer->setStore($mid, $store_name, $store_address, $store_phone, null, null);
+
+            // Add items
+            foreach (Cart::getContent() as $item) {
+                $printer->addItem(
+                    $item->name,
+                    $item->quantity,
+                    $item->price
+                );
+            }
+
+            // Calculate total
+            // $printer->calculateSubTotal();
+            $printer->calculateGrandTotal();
+
+            // Set transaction ID
+            $printer->setTransactionID($transaction_id);
+
+            // Set qr code
+            // $printer->setQRcode([
+            //     'tid' => $transaction_id,
+            // ]);
+
+            // Print receipt
+            $printer->printAntrian();
+            // $printer->printLogo();
+        } else {
+            
+            $this->message = 'Sync Product dan Transfer terlebih dahulu';
         }
 
-        // Calculate total
-        // $printer->calculateSubTotal();
-        $printer->calculateGrandTotal();
-
-        // Set transaction ID
-        $printer->setTransactionID($transaction_id);
-
-        // Set qr code
-        // $printer->setQRcode([
-        //     'tid' => $transaction_id,
-        // ]);
-
-        // Print receipt
-        $printer->printAntrian();
-        // $printer->printLogo();
     }
 
-    public function actionSync(){
-
-        return redirect()->route('home');
-        $local_product = ProductFacades::with('detail')->get();
-
-        $test_product = Curl::to('https://localhost/kasir/api/stock_api')->withData([
-            'branch' => auth()->user()->branch,
-            'username' => auth()->user()->username
-        ])->post();
-        $data_product = json_decode($test_product);
-
-        foreach($data_product as $item){
-            $get = $local_product->where('item_product_id', $item->item_product_id)->first();
-
-            if($get){
-                $detail = $get->detail;
-                foreach($detail as $det){
-
-
-                }
-            }
-            else{
-                $parse_product = $item;
-                ProductFacades::create([
-                    'item_product_id' => $parse_product->item_product_id,
-                    'item_product_min_stock' => $parse_product->item_product_min_stock,
-                    'item_product_price' => $parse_product->item_product_price,
-                    'item_product_item_category_id' => $parse_product->item_product_item_category_id,
-                    'item_product_name' => $parse_product->item_product_name,
-                ]);
-            }
-        }
+    public function checkValid()
+    {
+        $stat = false;
         
+        $check = DB::table('sync')
+        ->where('sync_branch', auth()->user()->branch)
+        ->whereDate('sync_datetime', Carbon::today())
+        ->whereIn('sync_module', ['product', 'transfer'])
+        ->first();
+        
+        if ($check) {
+            $stat = true;
+        }
+
+        return $stat;
+    }
+
+    public function actionSync()
+    {
+        return redirect()->route('home');
+        //$local_product = ProductFacades::with('detail')->get();
+
+        // $test_product = Curl::to('https://localhost/kasir/api/stock_api')->withData([
+        //     'branch' => auth()->user()->branch,
+        //     'username' => auth()->user()->username,
+        // ])->post();
+        // $data_product = json_decode($test_product);
+
+        // foreach ($data_product as $item) {
+        //     $get = $local_product->where('item_product_id', $item->item_product_id)->first();
+
+        //     if ($get) {
+        //         $detail = $get->detail;
+        //         foreach ($detail as $det) {
+
+        //         }
+        //     } else {
+        //         $parse_product = $item;
+        //         ProductFacades::create([
+        //             'item_product_id' => $parse_product->item_product_id,
+        //             'item_product_min_stock' => $parse_product->item_product_min_stock,
+        //             'item_product_price' => $parse_product->item_product_price,
+        //             'item_product_item_category_id' => $parse_product->item_product_item_category_id,
+        //             'item_product_name' => $parse_product->item_product_name,
+        //         ]);
+        //     }
+        // }
+
     }
 }

@@ -28,7 +28,7 @@
                         <label class="col-md-2 control-label">Ke Tanggal</label>
                         <div class="col-md-4">
                             <div class="input-group">
-                                <input type="text" name="to" value="{{ old('to') ?? date('Y-m-d') }}" class="date">
+                                <input type="text" name="to" value="{{ old('to') ?? Carbon\Carbon::tomorrow()->format('Y-m-d') }}" class="date">
                                 <span class="input-group-addon">
                                     <i class="fa fa-calendar"></i>
                                 </span>

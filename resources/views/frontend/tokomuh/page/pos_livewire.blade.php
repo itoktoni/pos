@@ -1,6 +1,6 @@
 @push('css')
 <style>
-.action{
+.action {
     color: #fff;
     font-weight: bold;
     text-transform: uppercase;
@@ -106,7 +106,7 @@
                                 <th>Uang <h4 style="cursor: pointer;">
                                         {{ Helper::createRupiah($bayar) }}</h4>
                                 </th>
-                                <th>Kembalian <h4>{{ Helper::createRupiah($kembalian) }}</h4>
+                                <th>Kembalian<h4>{{ Helper::createRupiah($kembalian) }}</h4>
                                 </th>
                             </tr>
                         </thead>
@@ -133,6 +133,11 @@
         <div class="row align-items-start">
             <div class="col-xl-4 col-md-6 col-lg-5 col-sm-12">
                 <div class="table ml-3 mt-1">
+
+                    <div class="text-danger">
+                        {{ $message }}
+                    </div>
+
                     <table class="table border">
                         <thead>
                             <tr>
@@ -153,7 +158,10 @@
                                 </th>
                             </tr>
                         </thead>
+
                     </table>
+
+
                 </div>
             </div>
 
@@ -171,33 +179,39 @@
                 <div class="row">
                     <div class="container action">
                         <div class="row  align-items-center mb-2">
-                            <div class="col-sm mr-2 pt-3 pb-3 text-center" wire:click="actionReset()"  style="background-color: #c0c0c0;color:black">
+                            <div class="col-sm mr-2 pt-3 pb-3 text-center" wire:click="actionReset()"
+                                style="background-color: #c0c0c0;color:black">
                                 Refresh
                             </div>
-                            <div class="col-sm pt-3 pb-3  text-center" wire:click="resetBayar()"  style="background-color: #DC3545;">
+                            <div class="col-sm pt-3 pb-3  text-center" wire:click="resetBayar()"
+                                style="background-color: #DC3545;">
                                 Reset
                             </div>
-                            <div class="col-sm pt-3 pb-3 ml-2 text-center"  wire:click="printAntrian()" style="background-color: #427BFF;">
+                            <div class="col-sm pt-3 pb-3 ml-2 text-center" wire:click="printAntrian()"
+                                style="background-color: #427BFF;">
                                 Antrian
                             </div>
                         </div>
 
                         <div class="row align-items-center">
-                            <div class="col-sm pt-3 pb-3 mr-2 text-center"  wire:click="actionSync()" style="background-color: #F2C010;color:black">
-                               Sync
+                            <div class="col-sm pt-3 pb-3 mr-2 text-center" wire:click="actionSync()"
+                                style="background-color: #F2C010;color:black">
+                                Sync
                             </div>
-                            <div class="col-sm pt-3 pb-3 text-center" wire:click="actionLogout()" style="background-color: black;">
+                            <div class="col-sm pt-3 pb-3 text-center" wire:click="actionLogout()"
+                                style="background-color: black;">
                                 Logout
                             </div>
-                            <div wire:click="createOrder()" class="col-sm pt-3 pb-3 ml-2 text-center" style="background-color: #4FA746;">
-                               Selesai
+                            <div wire:click="createOrder()" class="col-sm pt-3 pb-3 ml-2 text-center"
+                                style="background-color: #4FA746;">
+                                Selesai
                             </div>
                         </div>
 
                     </div>
-                    
+
                 </div>
-                
+
             </div>
         </div>
 

@@ -27,7 +27,7 @@ class OrderRequest extends FormRequest
 
     public function prepareForValidation()
     {
-        $autonumber = Helper::autoNumber(self::$model->getTable(), self::$model->getKeyName(), 'SO' . date('Ym'), config('website.autonumber'));
+        $autonumber = Helper::autoNumber(self::$model->getTable(), self::$model->getKeyName(), 'S'.auth()->user()->branch . date('Ym'), config('website.autonumber'));
         if (!empty($this->code) && config('module') == 'sales_order') {
             $autonumber = $this->code;
         }
