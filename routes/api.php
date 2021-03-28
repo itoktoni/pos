@@ -368,7 +368,7 @@ Route::match(['GET','POST'],'sync_stock/{code}',
             ProductDetail::create($data);
 
             foreach($update as $up){
-                $upstair = ProductDetail::where('item_detail_branch_id', $up['branch'])
+                $upstair = ProductDetail::where('item_detail_branch_id', $from)
                 ->where('item_detail_product_id', $up['id'])->first();
 
                 $upstair->item_detail_stock_qty = $upstair->item_detail_stock_qty - $up['qty'];
