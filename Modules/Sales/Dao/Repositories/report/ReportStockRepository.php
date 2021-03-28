@@ -29,6 +29,7 @@ class ReportStockRepository extends ProductDetail implements FromCollection, Wit
     {
         return [
             'Product ID',
+            'Category',
             'Nama Product',
             'Branch',
             'Harga Jual',
@@ -46,11 +47,12 @@ class ReportStockRepository extends ProductDetail implements FromCollection, Wit
     {
         $query = $this->model->stockRepository()
             ->select([
-                'item_product_id',
+                'item_detail_product_id',
+                'item_category_name',
                 'item_product_name',
                 'branch_name',
                 'item_product_sell',
-                'item_detail_stock_qty',
+                DB::raw('sum(item_detail_stock_qty) as qty'),
             ]);
         
         // if ($promo = request()->get('promo')) {
@@ -80,7 +82,7 @@ class ReportStockRepository extends ProductDetail implements FromCollection, Wit
     public function map($data): array
     {
         return [
-           $data->item_product_id, 
+           $data->item_detail_product_id, 
         //    $data->sales_order_created_at ? $data->sales_order_created_at->format('d-m-Y') : '', 
         //    $data->sales_order_date_order ? $data->sales_order_date_order->format('d-m-Y') : '', 
         //    $data->sales_order_to_name, 
@@ -93,10 +95,11 @@ class ReportStockRepository extends ProductDetail implements FromCollection, Wit
         //    $data->sales_order_courier_name, 
         //    $data->sales_order_courier_waybill, 
         //    $data->sales_order_sum_ongkir,
+           $data->item_category_name, 
            $data->item_product_name, 
            $data->branch_name, 
            $data->item_product_sell, 
-           $data->item_detail_stock_qty, 
+           $data->qty, 
         ];
     }
 
