@@ -348,8 +348,8 @@ class DeliveryController extends Controller
                     'to' => $to
                 ];
                 $pdf = PDF::loadView(Helper::setViewPrint('print_stock', $this->folder), $pasing);
-                // return $pdf->download();
-                return $pdf->stream();
+                return $pdf->download();
+                // return $pdf->stream();
             }
         }
 
