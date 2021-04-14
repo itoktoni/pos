@@ -17,7 +17,7 @@
                 <input type="hidden" value="{{ $item['temp_notes'] ?? $item->sales_order_detail_id }}"
                     name="detail[{{ $loop->index }}][temp_notes]">
                 <input type="text" readonly class="form-control input-sm"
-                    value="{{ $item['temp_product'] ?? $item->sales_order_detail_item_product_description }}"
+                    value="{{ $item['temp_product'] ?? $item->product->item_product_name }}"
                     name="detail[{{ $loop->index }}][temp_product]">
             </td>
             <td data-title="Qty" class="text-right col-lg-1">

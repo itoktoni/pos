@@ -337,8 +337,9 @@ class DeliveryController extends Controller
                 ->leftJoin($detail->getTable(), 'item_detail_product_id', ProductFacades::getKeyName())
                 ->leftJoin(CategoryFacades::getTable(), CategoryFacades::getKeyName(), 'item_product_item_category_id')
                 ->leftJoin(BranchFacades::getTable(), BranchFacades::getKeyName(), 'item_detail_branch_id')
-                ->where('item_detail_date_sync','>=', $from)
-                ->where('item_detail_date_sync','<=', $to)
+                ->whereNotNull('item_detail_product_id')
+                //->where('item_detail_date_sync','>=', $from)
+                //->where('item_detail_date_sync','<=', $to)
                 ->get();
                 
                 $id = request()->get('code');

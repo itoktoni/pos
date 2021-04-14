@@ -647,7 +647,7 @@
 
                 <tr class="header">
                     <td class="no">
-                        <strong>{{ $item->item_detail_product_id }}</strong>
+                        <strong>{{ $item->item_product_id }}</strong>
                     </td>
                     <td class="price">
                         <strong>{{ $item->item_category_name }}</strong>
