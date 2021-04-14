@@ -647,17 +647,16 @@
             <table cellpadding="" 5 cellspacing="0" width="100%">
                 <tr class="destination">
                     <td colspan='8'>
-                        <strong>Kepada : </strong>
+                        <strong>Transaksi : </strong>
                     </td>
                 </tr>
                 <tr class="contact">
                     <td colspan='8'>
                         <strong>
-                            {{ $master->sales_order_to_name ?? '' }} ( {{ $master->sales_order_to_phone ?? '' }} )
+                            {{ $master->sales_order_from_name ?? '' }} ( {{ $master->sales_order_from_phone ?? '' }} )
                         </strong>
                         <p>
-                            {{ $master->sales_order_to_address ?? '' }} /
-                            {{ Helper::getSingleArea($master->sales_order_to_area, true) ?? '' }}
+                            {{ $master->sales_order_from_address ?? '' }} /
                         </p>
                     </td>
                 </tr>
@@ -692,7 +691,7 @@
                     </td>
                     <td class="product" colspan="4">
                         <h1>
-                            {{ $item->product->item_product_name ?? '' }}
+                            {{ $item->sales_order_detail_item_product_description ?? '' }}
                         </h1>
                        
                     </td>
@@ -700,7 +699,7 @@
                         {{ Helper::createRupiah($item->sales_order_detail_price) ?? '' }}
                     </td>
                     <td class="qty">
-                        {{ $item->sales_order_detail_sent ?? '' }}
+                        {{ $item->sales_order_detail_qty ?? '' }}
                     </td>
                     <td class="total">
                         {{ Helper::createRupiah($item->sales_order_detail_total) ?? '' }}
@@ -713,18 +712,18 @@
                         Total Product
                     </td>
                     <td class="total">
-                        {{ Helper::createRupiah($total_delivery) ?? '' }}
+                        {{ Helper::createRupiah($master->sales_order_sum_total) ?? '' }}
                     </td>
                 </tr>
 
-                @if (!empty($master->sales_order_discount_value))
+                @if (!empty($master->sales_order_sum_bayar))
                 <tr class="total_discount">
                     <td class="product" colspan="7">
-                        {{ ucfirst($master->sales_order_discount_name) ?? '' }} : =
-                        Total Discount
+                       
+                        Bayar
                     </td>
                     <td class="total">
-                        -{{ Helper::createRupiah($master->sales_order_discount_value) ?? '' }}
+                        {{ Helper::createRupiah($master->sales_order_sum_total) ?? '' }}
                     </td>
                 </tr>
                 @endif
@@ -740,10 +739,10 @@
                 @endif
                 <tr class="total_sumary">
                     <td class="product" colspan="7">
-                        Total
+                        Kembali
                     </td>
                     <td class="total">
-                        {{ Helper::createRupiah($grand_total) ?? '' }}
+                        {{ Helper::createRupiah($master->sales_order_sum_kembali) ?? '' }}
                     </td>
                 </tr>
 
