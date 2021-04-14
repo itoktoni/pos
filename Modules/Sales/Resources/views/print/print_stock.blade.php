@@ -621,7 +621,7 @@
                         </strong>
                     </td>
                     <td colspan='4' class="message">
-                    from : {{ $from ?? '' }} to : {{ $to ?? '' }} 
+                        {{ date('Y-m-d H:i:s') }} 
                     </td>
                 </tr>
 
