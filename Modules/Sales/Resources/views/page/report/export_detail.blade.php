@@ -33,7 +33,7 @@
         <tr>
             <td>{{ $data->sales_order_id }} </td>
             <!-- <td>{{ $data->sales_order_created_at ? $data->sales_order_created_at->format('d-m-Y') : '' }} </td> -->
-            <td>{{ $data->sales_order_date_order ? $data->sales_order_date_order->format('d-m-Y') : '' }} </td>
+            <td>{{ $data->sales_order_date_order ? $data->sales_order_date_order->format('d-m-Y H:i:s') : '' }} </td>
             <!-- <td>{{ $data->sales_order_to_name }} </td>
             <td>{{ $data->sales_order_to_email }} </td>
             <td>{{ $data->sales_order_to_phone }} </td> -->

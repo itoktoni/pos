@@ -33,8 +33,8 @@
         @foreach($data->variant as $variant)
         <tr>
             <td>{{ $data->sales_order_id }} </td>
-            <td>{{Carbon\Carbon::parse($data->sales_order_created_at)->format('d-m-Y') ?? '' }} </td>
-            <td>{{Carbon\Carbon::parse($data->sales_order_date_order)->format('d-m-Y') ?? '' }} </td>
+            <td>{{Carbon\Carbon::parse($data->sales_order_created_at)->format('d-m-Y H:i:s') ?? '' }} </td>
+            <td>{{Carbon\Carbon::parse($data->sales_order_date_order)->format('d-m-Y H:i:s') ?? '' }} </td>
             <td>{{ $status[$data->sales_order_status] ?? '' }} </td>
             <td>{{ $data->branch_name }} </td>
             <td>{{ $data->sales_order_to_name }} </td>
@@ -61,8 +61,8 @@
         @else
         <tr>
             <td>{{ $data->sales_order_id }} </td>
-            <td>{{Carbon\Carbon::parse($data->sales_order_created_at)->format('d-m-Y') ?? '' }} </td>
-            <td>{{Carbon\Carbon::parse($data->sales_order_date_order)->format('d-m-Y') ?? '' }} </td>
+            <td>{{Carbon\Carbon::parse($data->sales_order_created_at)->format('d-m-Y H:i:s') ?? '' }} </td>
+            <td>{{Carbon\Carbon::parse($data->sales_order_date_order)->format('d-m-Y H:i:s') ?? '' }} </td>
             <td>{{ $status[$data->sales_order_status] ?? '' }} </td>
             <td>{{ $data->branch_name }} </td>
              <td>{{ $data->sales_order_to_name }} </td>

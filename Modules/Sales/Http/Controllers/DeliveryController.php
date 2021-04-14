@@ -2,6 +2,7 @@
 
 namespace Modules\Sales\Http\Controllers;
 
+use App\Dao\Facades\BranchFacades;
 use App\Dao\Repositories\BranchRepository;
 use App\Http\Controllers\Controller;
 use App\Http\Services\MasterService;
@@ -11,6 +12,7 @@ use Ixudra\Curl\Facades\Curl;
 use Modules\Finance\Dao\Repositories\PaymentRepository;
 use Modules\Finance\Dao\Repositories\TaxRepository;
 use Modules\Finance\Dao\Repositories\TopRepository;
+use Modules\Item\Dao\Facades\CategoryFacades;
 use Modules\Item\Dao\Facades\ProductFacades;
 use Modules\Item\Dao\Models\ProductDetail;
 use Modules\Item\Dao\Repositories\ProductRepository;
@@ -213,7 +215,6 @@ class DeliveryController extends Controller
                     'date' => request()->get('sales_delivery_date'),
                     'from' => $from,
                     'to' => $to,
-                    // 'update' => $request->detail,
                     'data' => ProductDetail::where('item_detail_branch_id', $branch)->get()->toArray(),
                 ])->post();
                 
@@ -320,8 +321,36 @@ class DeliveryController extends Controller
     {
         if (request()->isMethod('POST')) {
 
-            $this->sync_stock();
-            Alert::update('Success Syncronize');
+            $request = request()->all();
+            if (isset($request['sync'])) {
+
+                $this->sync_stock();
+                Alert::update('Success Syncronize');
+
+            } else if (isset($request['pdf'])) {
+
+                $from = $request['from'];
+                $to = $request['to'];
+
+                $detail = new ProductDetail();
+                $data = DB::table(ProductFacades::getTable())
+                ->leftJoin($detail->getTable(), 'item_detail_product_id', ProductFacades::getKeyName())
+                ->leftJoin(CategoryFacades::getTable(), CategoryFacades::getKeyName(), 'item_product_item_category_id')
+                ->leftJoin(BranchFacades::getTable(), BranchFacades::getKeyName(), 'item_detail_branch_id')
+                ->where('item_detail_date_sync','>=', $from)
+                ->where('item_detail_date_sync','<=', $to)
+                ->get();
+                
+                $id = request()->get('code');
+                $pasing = [
+                    'data' => $data,
+                    'from' => $from,
+                    'to' => $to
+                ];
+                $pdf = PDF::loadView(Helper::setViewPrint('print_stock', $this->folder), $pasing);
+                // return $pdf->download();
+                return $pdf->stream();
+            }
         }
 
         $product = ProductFacades::with(['detail' => function ($query) {

@@ -79,7 +79,7 @@ class ProductController extends Controller
             if (isset($check['status']) && $check['status']) {
                 return redirect()->route($this->getModule() . '_update', ['code' => $check['data']->item_product_id]);
             }
-            return redirect()->back();
+            return redirect()->route($this->getModule() . '_data');
         }
         return view(Helper::setViewSave($this->template, $this->folder))->with($this->share([
             'model' => self::$model,
@@ -99,7 +99,7 @@ class ProductController extends Controller
                 return redirect()->route($this->getModule() . '_data');
             }
 
-            return redirect()->back();
+            return redirect()->route($this->getModule() . '_data');
         }
 
         if (request()->has('code')) {

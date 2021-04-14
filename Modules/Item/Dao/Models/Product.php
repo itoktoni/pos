@@ -71,6 +71,7 @@ class Product extends Model
     public $incrementing = true;
     // public $keyType = 'string';
     public $rules = [
+        'item_product_id' => 'required|unique:item_product',
         'item_product_name' => 'required|min:3|unique:item_product',
         'item_product_buy' => 'required',
         'item_product_sell' => 'required',
