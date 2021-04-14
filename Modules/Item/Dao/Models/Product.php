@@ -85,7 +85,7 @@ class Product extends Model
 
     public $searching = 'item_product_name';
     public $datatable = [
-        'item_product_id' => [false => 'ID'],
+        'item_product_id' => [true => 'ID'],
         'item_product_item_category_id' => [false => 'Category'],
         'item_category_name' => [true => 'Category'],
         'item_product_name' => [true => 'Product Name'],
