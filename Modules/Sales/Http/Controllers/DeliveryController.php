@@ -329,8 +329,6 @@ class DeliveryController extends Controller
 
             } else if (isset($request['pdf'])) {
 
-                $from = $request['from'];
-                $to = $request['to'];
 
                 $detail = new ProductDetail();
                 $data = DB::table(ProductFacades::getTable())
@@ -345,8 +343,6 @@ class DeliveryController extends Controller
                 $id = request()->get('code');
                 $pasing = [
                     'data' => $data,
-                    'from' => $from,
-                    'to' => $to
                 ];
                 $pdf = PDF::loadView(Helper::setViewPrint('print_stock', $this->folder), $pasing);
                 return $pdf->download();
