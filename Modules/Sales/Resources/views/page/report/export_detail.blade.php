@@ -7,8 +7,8 @@
             <!-- <td>Customer</td> -->
             <!-- <td>Email</td>
             <td>Phone</td>
-            <td>Status</td>
-            <td>Branch</td> -->
+            <td>Status</td>-->
+            <td>Branch</td>
             <td>Total Order</td>
             <td>Bayar</td>
             <td>Kembalian</td>
@@ -37,8 +37,8 @@
             <!-- <td>{{ $data->sales_order_to_name }} </td>
             <td>{{ $data->sales_order_to_email }} </td>
             <td>{{ $data->sales_order_to_phone }} </td> -->
-            <!-- <td>{{ $data->status[$data->sales_order_status][0] ?? '' }} </td>
-            <td>{{ $data->branch_name }} </td> -->
+            <!-- <td>{{ $data->status[$data->sales_order_status][0] ?? '' }} </td> -->
+            <td>{{ $data->branch_name }} </td>
             <td>{{ $data->sales_order_sum_total }} </td>
             <td>{{ $data->sales_order_sum_bayar }} </td>
             <td>{{ $data->sales_order_sum_kembalian }} </td>
