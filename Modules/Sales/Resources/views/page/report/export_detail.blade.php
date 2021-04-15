@@ -18,7 +18,7 @@
             <td>Grand Total</td>
             <td>Waybill</td> -->
             <td>Category Name</td>
-            <!-- <td>Product ID</td> -->
+            <td>Product ID</td>
             <td>Product Name</td>
             <td>Qty Order</td>
             <!-- <td>Sent Order</td> -->
@@ -49,7 +49,7 @@
             <td>{{ $data->sales_order_delivery_name }} </td> -->
             <td>{{ $data->item_category_name }} </td>
             <td>{{ $data->item_product_id }} </td>
-            <!-- <td>{{ $data->sales_order_detail_item_product_description }} </td> -->
+            <td>{{ $data->sales_order_detail_item_product_description }} </td>
             <td>{{ $data->sales_order_detail_qty }} </td>
             <!-- <td>{{ $data->sales_order_detail_sent }} </td> -->
             <td>{{ $data->sales_order_detail_price }} </td>
