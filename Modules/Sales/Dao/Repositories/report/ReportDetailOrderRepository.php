@@ -127,6 +127,7 @@ class ReportDetailOrderRepository extends Order implements FromView, ShouldAutoS
         // }
 
         $query = $query->orderBy($this->model->getKeyName(), 'ASC');
+        // dd($query->get());
         return view('Sales::page.report.export_detail', [
             'export' => $query->get()
         ]);
