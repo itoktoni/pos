@@ -186,6 +186,7 @@ class DeliveryController extends Controller
                     if (!$check_product) {
 
                         ProductFacades::create([
+                            'item_product_id' => $detail['id'],
                             'item_product_sell' => $detail['price'],
                             'item_product_name' => $detail['name'],
                             'item_product_item_category_id' => $detail['category'],
