@@ -382,6 +382,9 @@ class DeliveryController extends Controller
 
         if (request()->isMethod('POST')) {
 
+            $master = $order->limit(10)->get();
+            $whereMaster = $master->pluck('sales_order_id')->toArray();
+
             $detail = OrderDetailFacades::join(OrderFacades::getTable(), OrderFacades::getKeyName(), 'sales_order_detail_order_id')
                 ->setEagerLoads([])
                 ->whereNull('sales_order_date_sync')
@@ -392,12 +395,12 @@ class DeliveryController extends Controller
                     'sales_order_detail_qty',
                     'sales_order_detail_price',
                     'sales_order_detail_total',
-                ]);
-
+                ])->whereIn('sales_order_detail_order_id', $whereMaster);
+            
             $branch = auth()->user()->branch;
             $curl = Curl::to(config('website.sync') . 'api/sync_transaction_api')
                 ->withData([
-                    'data' => $order->get()->toArray(),
+                    'data' => $master->toArray(),
                     'detail' => $detail->get()->toArray(),
                 ])->post();
 
