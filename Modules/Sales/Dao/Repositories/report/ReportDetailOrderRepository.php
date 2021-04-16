@@ -101,9 +101,15 @@ class ReportDetailOrderRepository extends Order implements FromView, ShouldAutoS
                 'item_product.*',
                 'sales_order_detail.*',
             ]);
-
-        if ($promo = request()->get('promo')) {
-            $query->where('sales_order_marketing_promo_code', $promo);
+        
+        if ($branch = request()->get('branch')) {
+            $query->where('sales_order_from_id', $branch);
+        }
+        if ($order = request()->get('order')) {
+            $query->where('sales_order_id', $order);
+        }
+        if ($product = request()->get('product')) {
+            $query->where('sales_order_detail_item_product_id', $product);
         }
         if ($status = request()->get('status')) {
             $query->where('sales_order_status', $status);
