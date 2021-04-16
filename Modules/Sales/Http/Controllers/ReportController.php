@@ -87,17 +87,17 @@ class ReportController extends Controller
         $data_product = Helper::shareOption(new ProductRepository(), false, true);
         $data_branch = Helper::shareOption(new BranchRepository(), false, true);
         
-        if(auth()->user()->company){
+        // if(auth()->user()->company){
 
-            $list_branch = Branch::where('branch_company_id', auth()->user()->company)->get()->pluck('branch_id');
-            $data_branch = $data_branch->where('branch_company_id', auth()->user()->company);
-            $data_product = $data_product->whereIn('item_product_branch_id', $list_branch);
-        }
-        else if(auth()->user()->branch){
-            $data_branch = $data_branch->where('branch_id', auth()->user()->branch);
-            $data_product = $data_product->where('item_product_branch_id', auth()->user()->branch);
-            $data_order = $data_order->where('sales_order_from_id', auth()->user()->branch);
-        }
+        //     $list_branch = Branch::where('branch_company_id', auth()->user()->company)->get()->pluck('branch_id');
+        //     $data_branch = $data_branch->where('branch_company_id', auth()->user()->company);
+        //     $data_product = $data_product->whereIn('item_product_branch_id', $list_branch);
+        // }
+        // else if(auth()->user()->branch){
+        //     $data_branch = $data_branch->where('branch_id', auth()->user()->branch);
+        //     $data_product = $data_product->where('item_product_branch_id', auth()->user()->branch);
+        //     $data_order = $data_order->where('sales_order_from_id', auth()->user()->branch);
+        // }
         
         $order = $data_order->pluck('sales_order_id')->prepend('Select Order');
         $product = $data_product->pluck('item_product_name', 'item_product_id')->prepend('Select Product', '');
