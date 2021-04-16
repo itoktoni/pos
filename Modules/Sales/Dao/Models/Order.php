@@ -132,7 +132,7 @@ class Order extends Model
         // '4' => ['PROCESSED', 'danger'],
         // '5' => ['DELIVERED', 'info'],
         // '6' => ['COMPLETED', 'default'],
-        '0' => ['CANCEL', 'danger'],
+        '2' => ['CANCEL', 'danger'],
     ];
 
     public function group()

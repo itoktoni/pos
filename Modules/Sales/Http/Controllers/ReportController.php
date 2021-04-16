@@ -45,7 +45,6 @@ class ReportController extends Controller
         
         $promo = Helper::shareOption(new PromoRepository())->prepend('Select All Promo', '');
         $status = Helper::shareStatus((new OrderRepository())->status)->prepend('All Status', '');
-
         $view = [
             'promo' => $promo,
             'branch' => $branch,
@@ -99,10 +98,9 @@ class ReportController extends Controller
         //     $data_order = $data_order->where('sales_order_from_id', auth()->user()->branch);
         // }
         
-        $order = $data_order->pluck('sales_order_id')->prepend('Select Order');
+        $order = $data_order->pluck('sales_order_id', 'sales_order_id')->prepend('Select Order');
         $product = $data_product->pluck('item_product_name', 'item_product_id')->prepend('Select Product', '');
         $branch = $data_branch->pluck('branch_name', 'branch_id')->prepend('Select Branch', '');
-
         return view(Helper::setViewForm($this->template, __FUNCTION__, config('folder')))->with($this->share([
             'data_product' => $product,
             'data_branch' => $branch,

@@ -68,7 +68,6 @@ class OrderRequestUpdate extends FormRequest
             return [
                 'sales_order_from_id' => 'required',
                 'sales_order_from_name' => 'required',
-                'sales_order_to_name' => 'required',
                 'detail' => 'required',
             ];
         }
