@@ -21,7 +21,7 @@ use Modules\Sales\Dao\Facades\OrderGroupFacades;
 
 class Order extends Model
 {
-    use SoftDeletes;
+    // use SoftDeletes;
     protected $table = 'sales_order';
     protected $primaryKey = 'sales_order_id';
     protected $fillable = [
