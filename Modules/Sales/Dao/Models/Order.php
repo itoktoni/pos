@@ -121,7 +121,7 @@ class Order extends Model
     ];
 
     protected $casts = [
-        'sales_order_date_order' => 'datetime:Y-m-d',
+        'sales_order_date_order' => 'datetime:Y-m-d H:i:s',
         'sales_order_payment_date' => 'datetime:Y-m-d',
     ];
 

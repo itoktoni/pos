@@ -109,6 +109,19 @@ class OrderService extends MasterService
         }
     }
 
+    public function delete(MasterInterface $repository)
+    {
+        $rules = ['id' => 'required'];
+        // valdiate rules
+        request()->validate($rules, ['id.required' => 'Please select any data !']);
+        $check = $repository->deleteRepository(request()->get('id'));
+        if ($check['status']) {
+            Alert::delete();
+        } else {
+            Alert::error($check['data']);
+        }
+    }
+
     public function delivery(MasterInterface $repository, $request)
     {
         $check = false;

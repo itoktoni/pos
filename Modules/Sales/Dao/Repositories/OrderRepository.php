@@ -12,6 +12,7 @@ use Illuminate\Database\QueryException;
 use Modules\Crm\Dao\Facades\CustomerFacades;
 use Modules\Item\Dao\Facades\ProductFacades;
 use Modules\Sales\Dao\Facades\DeliveryDetailFacades;
+use Modules\Sales\Dao\Facades\OrderDetailFacades;
 
 class OrderRepository extends Order implements MasterInterface
 {
@@ -86,6 +87,7 @@ class OrderRepository extends Order implements MasterInterface
     {
         try {
             $activity = $this->Destroy(array_values($data));
+            OrderDetailFacades::whereIn('sales_order_detail_order_id', $data);
             return Notes::delete($activity);
         } catch (\Illuminate\Database\QueryException $ex) {
             return Notes::error($ex->getMessage());
