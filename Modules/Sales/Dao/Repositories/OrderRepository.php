@@ -87,7 +87,7 @@ class OrderRepository extends Order implements MasterInterface
     {
         try {
             $activity = $this->Destroy(array_values($data));
-            OrderDetailFacades::whereIn('sales_order_detail_order_id', $data);
+            OrderDetailFacades::whereIn('sales_order_detail_order_id', $data)->delete();
             return Notes::delete($activity);
         } catch (\Illuminate\Database\QueryException $ex) {
             return Notes::error($ex->getMessage());

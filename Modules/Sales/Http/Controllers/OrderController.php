@@ -148,7 +148,7 @@ class OrderController extends Controller
         ]));
     }
 
-    public function delete(MasterService $service)
+    public function delete(OrderService $service)
     {
         if (request()->has('code') && request()->has('detail')) {
             $code = request()->get('code');
