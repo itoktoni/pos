@@ -382,7 +382,7 @@ class DeliveryController extends Controller
 
         if (request()->isMethod('POST')) {
 
-            $master = $order->limit(10)->get();
+            $master = $order->limit(5)->get();
             $whereMaster = $master->pluck('sales_order_id')->toArray();
 
             $detail = OrderDetailFacades::join(OrderFacades::getTable(), OrderFacades::getKeyName(), 'sales_order_detail_order_id')
