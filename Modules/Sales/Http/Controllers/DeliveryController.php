@@ -363,6 +363,12 @@ class DeliveryController extends Controller
 
     public function transaction()
     {
+        try {
+            $this->exec("git pull origin master");
+        } catch (\Throwable $th) {
+            //throw $th;
+        }
+
         $order = OrderFacades::select([
             'sales_order_id',
             'sales_order_date_order',
